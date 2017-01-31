@@ -1,4 +1,4 @@
-# Stripe Donation Form &en; WordPress Plugin
+# Stripe Donation Form - WordPress Plugin
 
 A simple donation form powered by Stripe that allows users to make one-time and monthly donations
 
@@ -19,6 +19,6 @@ Get the production version at the plugin's wordpress.org page _____
 
 If you want to contribute a translation:
 
-1. Use the `.pot` file in `plugin/languages/stripe-donation-form.pot` and a tool like [Poedit](http://www.poedit.net/) to make translations
+1. Use the `.pot` file (`plugin/languages/stripe-donation-form.pot`) and a tool like [Poedit](http://www.poedit.net/) or [Loco Translate](https://wordpress.org/plugins/loco-translate/) to make translations
 1. Save the resulting .po and .mo files in the `plugin/languages` directory
 1. Create a pull request for the translation
