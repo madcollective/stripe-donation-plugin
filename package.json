@@ -1,0 +1,30 @@
+{
+  "scripts": {
+    "composer-setup": "docker exec --user www-data stripe_donation_form_wp /bin/bash /var/setup-scripts/composer-install.sh",
+    "wp-setup": "docker exec --user www-data stripe_donation_form_wp /bin/bash /var/setup-scripts/wordpress-setup.sh"
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "add-class": "^1.0.3",
+    "babel": "^6.5.2",
+    "babel-core": "^6.10.4",
+    "babel-loader": "^6.2.4",
+    "babel-polyfill": "^6.16.0",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "cssnano": "^3.10.0",
+    "gulp": "^3.9.1",
+    "gulp-phplint": "^0.3.4",
+    "gulp-postcss": "^6.1.1",
+    "gulp-sourcemaps": "^2.4.0",
+    "has-class": "^1.0.6",
+    "normalize.css": "^5.0.0",
+    "postcss-cssnext": "^2.7.0",
+    "postcss-import": "^9.1.0",
+    "postcss-mixins": "^5.0.0",
+    "postcss-nested": "^1.0.0",
+    "postcss-simple-vars": "^3.0.0",
+    "remove-class": "^1.0.0",
+    "webpack": "^1.13.1"
+  }
+}
