@@ -4,9 +4,11 @@ A simple donation form powered by Stripe that allows users to make one-time and 
 
 ## Features
 
-* A set of pre-set donation amounts with optional custom amount
+* A collection of user-defined pre-set donation amounts with optional custom amount
 * Stripe Subscriptions support for monthly donations
 * Optional collection of other donator information to stay in touch
+* Sensitive information passes directly from the client browser to Stripe and not through your own webserver, which reduces extra security obligations
+* [Accessible](https://www.w3.org/TR/WCAG20/) and semantic markup that is ready to style and integrate into your theme or website
 
 ## Development
 
