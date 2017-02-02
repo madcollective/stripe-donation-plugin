@@ -44,6 +44,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/StripeDonationForm.php';
  * admin-specific hooks, and public-facing site hooks.
  */
 call_user_func( function() {
-	$plugin = new StripeDonationForm\Plugin();
+	$url = plugin_dir_url( __FILE__ );
+	$plugin = new StripeDonationForm\Plugin( 'stripe-donation-form', $url );
 	$plugin->run();
 } );

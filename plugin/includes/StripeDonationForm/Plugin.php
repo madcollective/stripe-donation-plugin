@@ -29,6 +29,11 @@ class Plugin {
 	private $version;
 
 	/**
+	 * @var      string    $base_url    The base url for the plugin directory.
+	 */
+	private $base_url;
+
+	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
 	 * the plugin.
 	 *
@@ -53,10 +58,11 @@ class Plugin {
 	 * Load the dependencies, define the locale, and set the hooks for the admin area and
 	 * the public-facing side of the site.
 	 */
-	public function __construct() {
+	public function __construct( $plugin_name, $base_url ) {
+		$this->plugin_name = $plugin_name;
 		$plugin_data = self::get_plugin_data( $this->plugin_name );
-		$this->plugin_name = $plugin_data['TextDomain'];
 		$this->version = $plugin_data['Version'];
+		$this->base_url = $base_url;
 
 		$this->init();
 		$this->register_hooks();
@@ -69,7 +75,7 @@ class Plugin {
 	private function init() {
 		$this->loader = new Tools\Loader();
 		$this->i18n = new I18n( $this->plugin_name );
-		$this->assets = new Assets( $this->plugin_name, $this->version );
+		$this->assets = new Assets( $this->plugin_name, $this->version, $this->base_url );
 	}
 
 	/**

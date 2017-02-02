@@ -12,6 +12,9 @@ A simple donation form powered by Stripe that allows users to make one-time and 
 
 ## Development
 
+### Locales
+
+In order to get currency formatting to work on the test server, one must manually choose locales to install. It doesn't come with any. First, log into the WordPress container with `docker exec -it stripe_donation_form_wp bash`. Once inside, run `dpkg-reconfigure locales` and follow the prompts to choose appropriate locales.
 
 ## Installation for production use
 

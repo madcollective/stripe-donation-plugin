@@ -1,5 +1,5 @@
 # This Dockerfile and accompanying setup scripts are curtesy of Cully Larson (@cullylarson).
-FROM wordpress
+FROM hgezim/wp-nocache
 
 # Set timezone
 RUN echo "America/Los_Angeles" | tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata

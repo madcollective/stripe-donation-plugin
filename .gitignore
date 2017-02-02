@@ -7,3 +7,4 @@ npm-debug.log
 .www/
 themes/
 plugin/vendor
+plugin/dist
