@@ -3,14 +3,22 @@
 namespace StripeDonationForm\Tools;
 
 /**
- * Allows us to get formatted lists of available locales on the system
- *
- * From http://www.binarytides.com/php-get-list-of-locales-installed-on-system/
+ * Detects and manages Locales
  *
  * @author Patrick Wolfert <patrick@madcollective.com>
  */
 class Locales {
 
+	/**
+	 * @var array    $locale_stack    Lets us keep a history of locale settings
+	 */
+	private static $locale_stack = [];
+
+	/**
+	 * Allows us to get formatted lists of available locales on the system
+	 *
+	 * Modified from http://www.binarytides.com/php-get-list-of-locales-installed-on-system/
+	 */
 	public static function get_supported_locales() {
 		$locales_list = [];
 
@@ -18,35 +26,63 @@ class Locales {
 		$locales = shell_exec( 'locale -a' );
 		$locales = explode( "\n" , $locales );
 
+		return array_map( function($l) {
+			$parts = explode( '.' , $l );
+			$locale_stem = $parts[0];
+			list( $lcode , $ccode ) = explode( '_' , $locale_stem );
+
+			return [
+				'locale' => $l,
+				'locale_stem' => $locale_stem,
+				'encoding' => count( $parts ) ? $parts[1] : '',
+				'country_code' => $ccode,
+				'country' => self::$country_codes[$ccode],
+				'lang' => strtolower($lcode)
+			];
+		}, $locales );
+	}
+
+	public static function get_currency_options( $utf8_only=true ) {
+		$locales = self::get_supported_locales();
+
+		if ( $utf8_only ) {
+			$locales = array_filter( $locales, function( $l ) {
+				return ( $l['encoding'] === 'UTF-8' || $l['encoding'] === 'utf8' );
+			} );
+		}
+
 		// Get the current locale settings
 		self::push();
 
-		foreach( $locales as $c => $l ) {
-			if ( strlen( $l ) ) {
-				$parts = explode( '.' , $l );
-				$lc = $parts[0];
-
-				list( $lcode , $ccode ) = explode( '_' , $lc );
-				$lcode = strtolower($lcode);
-
-				$country = self::$country_codes[$ccode];
-				setlocale( LC_MONETARY, $lc );
+		$options = array_combine(
+			$utf8_only ?
+				array_map( function($l) { return $l['locale']; }, $locales ) :
+				array_map( function($l) { return $l['locale_stem']; }, $locales ),
+			array_map( function($l) {
+				$country = $l['country'];
+				setlocale( LC_MONETARY, $l['locale_stem'] );
 				$locale_info = localeconv();
 				$currency_symbol = $locale_info['int_curr_symbol'];
 
-				if ( strlen( $currency_symbol ) and strlen( $country ) )
-					$locales_list["{$lcode}_{$ccode}"] = "$currency_symbol - $country";
-			}
-		}
+				if ( strlen( $country ) )
+					return "$currency_symbol - $country";
+				else
+					return null;
+			}, $locales )
+		);
 
 		// Reset the locale settings
 		self::pop();
 
-		return $locales_list;
+		return array_filter( $options, function( $value ) {
+			return ( $value !== null );
+		} );
 	}
 
-	private static $locale_stack = [];
-
+	/**
+	 * Pushes the current locale value of the specified category to a stack so
+	 *   we can pop it later to reset.
+	 */
 	public static function push( $category=LC_MONETARY ) {
 		if ( ! array_key_exists( $category, self::$locale_stack ) )
 			self::$locale_stack[$category] = [];
@@ -54,6 +90,10 @@ class Locales {
 		array_push( self::$locale_stack[$category], setlocale( $category, '0' ) );
 	}
 
+	/**
+	 * Pops the saved locale value of the specified category and restores it
+	 *   using setlocale.
+	 */
 	public static function pop( $category=LC_MONETARY ) {
 		if ( array_key_exists( $category, self::$locale_stack ) ) {
 			$previous_locale = array_pop( self::$locale_stack[$category] );

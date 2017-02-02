@@ -89,7 +89,7 @@ class Settings {
 			'label'             => __( 'Currency', 'stripe-donation-form' ),
 			'desc'              => __( 'List is based on locales available on your server', 'stripe-donation-form' ),
 			'type'              => 'select',
-			'options'           => Locales::get_supported_locales(),
+			'options'           => Locales::get_currency_options(),
 		] );
 
 		$this->settings_api->add_field( self::SETTINGS_STRIPE, [

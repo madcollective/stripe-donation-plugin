@@ -67,6 +67,7 @@ class FormView {
 
 		Locales::push();
 
+echo $options['locale'];
 		setlocale( LC_MONETARY, $options['locale'] );
 		$locale_info = localeconv();
 
