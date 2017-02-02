@@ -12,27 +12,28 @@ class Assets {
 	/**
 	 * The ID of this plugin.
 	 *
-	 * @var      string    $plugin_name    The ID of this plugin.
+	 * @var      string    $plugin_name    The ID of this plugin
 	 */
 	private $plugin_name;
 
 	/**
 	 * The version of this plugin.
 	 *
-	 * @var      string    $version    The current version of this plugin.
+	 * @var      string    $version    The current version of this plugin
 	 */
 	private $version;
 
 	/**
-	 * @var      string    $base_url    The base url for the plugin directory.
+	 * @var      string    $base_url    The base url for the plugin directory
 	 */
 	private $base_url;
 
 	/**
 	 * Initialize the class and set its properties.
 	 *
-	 * @param      string    $plugin_name       The name of the plugin.
-	 * @param      string    $version    The version of this plugin.
+	 * @param      string    $plugin_name     The name of the plugin
+	 * @param      string    $version         The version of this plugin
+	 * @param      string    $base_url        Base url of the plugin directory
 	 */
 	public function __construct( $plugin_name, $version, $base_url ) {
 		$this->plugin_name = $plugin_name;

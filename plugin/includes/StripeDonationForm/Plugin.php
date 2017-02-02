@@ -52,6 +52,11 @@ class Plugin {
 	private $assets;
 
 	/**
+	 * @var StripeDonationForm\Assets    $settings    Handles settings saving/loading and page rendering
+	 */
+	private $settings;
+
+	/**
 	 * Define the core functionality of the plugin.
 	 *
 	 * Set the plugin name and the plugin version that can be used throughout the plugin.
@@ -76,6 +81,7 @@ class Plugin {
 		$this->loader = new Tools\Loader();
 		$this->i18n = new I18n( $this->plugin_name );
 		$this->assets = new Assets( $this->plugin_name, $this->version, $this->base_url );
+		$this->settings = new Settings();
 	}
 
 	/**
@@ -83,6 +89,9 @@ class Plugin {
 	 */
 	private function register_hooks() {
 		$this->loader->add_action( 'plugins_loaded', $this->i18n, 'load_plugin_textdomain' );
+
+		$this->loader->add_action( 'admin_init', $this->settings, 'register_settings' );
+		$this->loader->add_action( 'admin_menu', $this->settings, 'add_page_menu_item' );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $this->assets, 'enqueue_admin_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $this->assets, 'enqueue_admin_scripts' );

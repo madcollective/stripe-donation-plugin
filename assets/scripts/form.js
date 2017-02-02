@@ -4,8 +4,48 @@ import addClass    from 'add-class';
 import hasClass    from 'has-class';
 import delegate    from 'delegate';
 
+function initSubmission() {
+	const form = document.querySelector('#stripe-donation-form');
+	const submit = form.querySelector('.submit');
+
+	form.addEventListener('submit', (event) => {
+		// Disable the submit button to prevent repeated clicks
+		submit.setAttribute('disabled', 'disabled');
+
+		// Request a token from Stripe
+		Stripe.card.createToken(form, stripeResponseHandler);
+
+		// Prevent the form from being submitted
+		event.preventDefault();
+	});
+
+	function stripeResponseHandler(status, response) {
+		if (response.error) { // Problem!
+			// Show the errors on the form
+			form.querySelector('.sdf-payment-errors').textContent = response.error.message;
+
+			// Re-enable submission
+			submit.removeAttribute('disabled');
+		}
+		else { // Token was created!
+			// Get the token ID
+			const token = response.id;
+
+			// Insert the token ID into the form so it gets submitted to the server
+			const input = document.createElement('input');
+			input.setAttribute('type', 'hidden');
+			input.setAttribute('name', 'stripeToken');
+			input.value = token;
+			form.appendChild(input);
+
+			// Submit the form
+			form.submit();
+		}
+	}
+}
+
 function initAmounts() {
-	const radioList = document.querySelector('.sdf-radio-button-list');
+	const radioList   = document.querySelector('.sdf-radio-button-list');
 	const amountInput = document.querySelector('input[name="amount"]');
 
 	function valueChanged(event) {
@@ -50,7 +90,7 @@ function initCardNumber() {
 
 		// Determine what type of card it is and apply the corresponding class to the element
 		for (let key in cardTypeMap) {
-			if (cardTypeMap[key].testr(number))
+			if (cardTypeMap[key].test(number))
 				addClass(numberInput, key);
 			else
 				removeClass(numberInput, key);
@@ -65,6 +105,7 @@ function initCardNumber() {
 
 export function onLoad() {
 	RunIf.selector('#stripe-donation-form', () => {
+		initSubmission();
 		initAmounts();
 		initCardNumber();
 	});

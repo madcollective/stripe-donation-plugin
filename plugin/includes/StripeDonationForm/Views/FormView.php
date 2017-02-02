@@ -2,6 +2,8 @@
 
 namespace StripeDonationForm\Views;
 
+use StripeDonationForm\Tools\Locales;
+
 /**
  * Renders the form
  *
@@ -63,23 +65,33 @@ class FormView {
 
 	private static function render_amount_fields( $options ) {
 
-		// TODO: Don't just assume US format
-		setlocale( LC_MONETARY, 'en_US' );
+		Locales::push();
+
+		setlocale( LC_MONETARY, $options['locale'] );
+		$locale_info = localeconv();
+
+		if ( $options['use_international_currency_symbol'] === 'on' ) {
+			$currency_symbol = $locale_info['int_curr_symbol'];
+			$currency_format = '%.0i';
+		}
+		else {
+			$currency_symbol = $locale_info['currency_symbol'];
+			$currency_format = '%.0n';
+		}
 
 		// Format the numbers amounts but retain the values as keys
 		$amounts = array_combine(
 			$options['preset_amounts'],
-			array_map( function( $amount ) {
-				return money_format( '%.0n', $amount );
+			array_map( function( $amount ) use ( $currency_format ) {
+				return money_format( $currency_format, $amount );
 			}, $options['preset_amounts'] )
 		);
 
-		$locale_info = localeconv();
-		$currency_symbol = $locale_info['currency_symbol'];
+		Locales::pop();
 
 		// Optionally append a "Custom" option to the end
 		if ( $options['allow_custom_amount'] )
-			$amounts['custom'] = 'Custom';
+			$amounts['custom'] = __( 'Other', 'stripe-donation-form' );
 
 		ob_start();
 		?>
@@ -127,6 +139,17 @@ class FormView {
 					</label>
 				</div>
 			<?php endif; ?>
+			<?php if ( $options['allow_monthly_donation'] ) : ?>
+				<div class="form-row sdf-monthly">
+					<label>
+						<input type="checkbox" name="monthly">
+						<span>
+							<?php _e( 'Make this my monthly donation.', 'stripe-donation-form' ); ?>
+							<small><?php _e( 'We will automatically receive your gift each month.', 'stripe-donation-form' ); ?></small>
+						</span>
+					</label>
+				</div>
+			<?php endif; ?>
 		<?php
 		return ob_get_clean();
 	}
@@ -164,7 +187,7 @@ class FormView {
 				<label>
 					<span><?php _e( 'Expiration (MM/YY)', 'stripe-donation-form' ); ?></span>
 					<input type="number" size="2" data-stripe="exp_month" pattern="\d{2}">
-					<span> / </span>
+					<span class="sdf-slash"> / </span>
 					<input type="number" size="2" data-stripe="exp_year" pattern="\d{2}">
 				</label>
 			</div>

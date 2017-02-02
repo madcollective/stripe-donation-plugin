@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a067562d7bc134f1e1b2b633ad6a8646",
-    "content-hash": "a34a5255b528f96522bafe340ed89d0f",
+    "hash": "d37f20c9496e13f6cab3b25ec8fb5f28",
+    "content-hash": "d626f0b139977625624fc10b4246742a",
     "packages": [
         {
             "name": "doctrine/instantiator",
@@ -1321,6 +1321,50 @@
             "time": "2017-01-03 13:51:32"
         },
         {
+            "name": "tareq1988/wordpress-settings-api-class",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tareq1988/wordpress-settings-api-class.git",
+                "reference": "d39a9ad738b2e2840aa02eff0e84fc58ade60aee"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tareq1988/wordpress-settings-api-class/zipball/d39a9ad738b2e2840aa02eff0e84fc58ade60aee",
+                "reference": "d39a9ad738b2e2840aa02eff0e84fc58ade60aee",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.4"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPLv2"
+            ],
+            "authors": [
+                {
+                    "name": "Tareq Hasan",
+                    "email": "tareq@wedevs.com",
+                    "homepage": "http://tareq.wedevs.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "WordPress settings API Abstraction Class",
+            "homepage": "https://github.com/tareq1988/wordpress-settings-api-class",
+            "keywords": [
+                "settings-api",
+                "wordpress",
+                "wp"
+            ],
+            "time": "2016-10-31 09:22:05"
+        },
+        {
             "name": "webmozart/assert",
             "version": "1.2.0",
             "source": {
@@ -1374,7 +1418,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "tareq1988/wordpress-settings-api-class": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

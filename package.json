@@ -1,6 +1,7 @@
 {
   "scripts": {
     "composer-setup": "docker exec --user www-data stripe_donation_form_wp /bin/bash /var/setup-scripts/composer-install.sh",
+    "composer-update": "docker exec --user www-data stripe_donation_form_wp /bin/bash /var/setup-scripts/composer-update.sh",
     "wp-setup": "docker exec --user www-data stripe_donation_form_wp /bin/bash /var/setup-scripts/wordpress-setup.sh"
   },
   "devDependencies": {},
