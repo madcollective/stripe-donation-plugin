@@ -34,7 +34,7 @@ function initSubmission() {
 			// Insert the token ID into the form so it gets submitted to the server
 			const input = document.createElement('input');
 			input.setAttribute('type', 'hidden');
-			input.setAttribute('name', 'stripeToken');
+			input.setAttribute('name', 'stripe_token');
 			input.value = token;
 			form.appendChild(input);
 

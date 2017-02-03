@@ -102,6 +102,43 @@ class Locales {
 		}
 	}
 
+	public static function format_money( $amounts, $decimals, $locale, $international=false ) {
+		Locales::push();
+
+		setlocale( LC_MONETARY, $locale );
+
+		$currency_format = $international ?
+			"%.{$decimals}i" :
+			"%.{$decimals}n";
+
+		if ( is_array( $amounts ) ) {
+			$output = array_map( function( $amount ) use ( $currency_format ) {
+				return money_format( $currency_format, $amount );
+			}, $amounts );
+		}
+		else
+			$output = money_format( $currency_format, $amounts );
+
+		Locales::pop();
+
+		return $output;
+	}
+
+	public static function get_currency_symbol( $locale, $international=false ) {
+		Locales::push();
+
+		setlocale( LC_MONETARY, $locale );
+		$locale_info = localeconv();
+
+		$currency_symbol = $international ?
+			$locale_info['int_curr_symbol'] :
+			$locale_info['currency_symbol'];
+
+		Locales::pop();
+
+		return $currency_symbol;
+	}
+
 	private static $country_codes = [
 		'AF' => 'Afghanistan',
 		'AX' => 'Aland Islands',

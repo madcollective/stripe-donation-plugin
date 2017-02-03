@@ -2,6 +2,7 @@
 
 namespace StripeDonationForm;
 
+use StripeDonationForm\Controllers\FormController;
 use StripeDonationForm\Tools;
 
 /**
@@ -98,6 +99,9 @@ class Plugin {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $this->assets, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $this->assets, 'enqueue_scripts' );
+
+		$this->loader->add_action( 'wp_ajax_nopriv_' . FormController::FORM_ACTION, 'StripeDonationForm\Controllers\FormController', 'post_donate' );
+		$this->loader->add_action( 'wp_ajax_'        . FormController::FORM_ACTION, 'StripeDonationForm\Controllers\FormController', 'post_donate' );
 	}
 
 	/**
