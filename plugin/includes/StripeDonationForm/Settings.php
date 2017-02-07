@@ -22,6 +22,7 @@ class Settings {
 	const FIELD_TEST_MODE = 'test_mode';
 	const FIELD_CURRENCY = 'currency';
 	const FIELD_CURRENCY_INTERNATIONAL = 'use_international_currency_symbol';
+	const FIELD_CURRENCY_SCALE = 'currency_scale';
 	const FIELD_STATEMENT_DESCRIPTOR = 'statement_descriptor';
 
 	const FIELD_MONTHLY_NOTE = 'monthly_note_text';
@@ -94,6 +95,15 @@ class Settings {
 			'label'             => __( 'Currency Symbol', 'stripe-donation-form' ),
 			'desc'              => __( 'Use international currency symbol', 'stripe-donation-form' ),
 			'type'              => 'checkbox',
+		] );
+		$this->settings_api->add_field( self::SETTINGS_STRIPE, [
+			'name'              => self::FIELD_CURRENCY_SCALE,
+			'label'             => __( 'Currency Scale', 'stripe-donation-form' ),
+			'desc'              => __( 'Number to multiply the amount by to get the smallest currency unit. For example, if the currency were USD, this value would be 100 to get to cents.', 'stripe-donation-form' ),
+			'default'           => 100,
+			'min'               => 1,
+			'type'              => 'number',
+			'sanitize_callback' => 'floatval',
 		] );
 		$this->settings_api->add_field( self::SETTINGS_STRIPE, [
 			'name'              => self::FIELD_STATEMENT_DESCRIPTOR,

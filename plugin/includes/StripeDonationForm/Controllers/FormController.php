@@ -22,7 +22,10 @@ class FormController {
 
 	const MIN_DONATION_AMOUNT = 1;
 
-	public static function post_donate( $is_ajax=true ) {
+	/**
+	 * Handles post requests for the donate action
+	 */
+	public static function post_donate() {
 		// Collect and sanitize input
 		$stripe_token = sanitize_text_field( $_POST['stripe_token'] );
 
@@ -33,11 +36,11 @@ class FormController {
 		$phone   = sanitize_text_field( $_POST['phone'] );
 
 		// Transform and determine useful things from input
-		$amount = floatval( $amount );
+		$amount = floatval( $amount ) * self::get_currency_scale();
 		$is_monthly = ( $monthly === 'on' );
 
 		// Validate input
-		$validation = self::validate_post_donate( $is_ajax, $is_monthly, $name, $email, $phone );
+		$validation = self::validate_post_donate( $amount, $is_monthly, $name, $email, $phone );
 
 		// Process donation if valid or return errors if not
 		if ( $validation === true ) {
@@ -49,9 +52,9 @@ class FormController {
 
 			// Charge the customer or set up a recurring payment
 			if ( $is_monthly )
-				self::donate_single();
+				self::donate_monthly( $customer, $amount );
 			else
-				self::donate_monthly();
+				self::donate_single( $customer, $amount );
 
 			// Build our response
 			$response = [
@@ -68,10 +71,7 @@ class FormController {
 		}
 
 		// Do something with our response
-		if ( $is_ajax )
-			wp_send_json( $response );
-		else
-			return $response;
+		wp_send_json( $response );
 	}
 
 	/**
@@ -110,6 +110,9 @@ class FormController {
 			return true;
 	}
 
+	/**
+	 * Creates and returns a Stripe Customer object
+	 */
 	private static function create_customer( $token, $email=null, $name=null, $phone=null ) {
 		return Customer::create( [
 			'email'    => $email,
@@ -118,6 +121,9 @@ class FormController {
 		] );
 	}
 
+	/**
+	 * Performs a single charge on a Stripe Customer
+	 */
 	private static function donate_single( Customer $customer, $amount ) {
 		$currency = self::get_currency();
 
@@ -131,10 +137,17 @@ class FormController {
 		return $charge;
 	}
 
+	/**
+	 * Creates a plan and monthly subscription for a Stripe Customer
+	 */
 	private static function donate_monthly( Customer $customer, $amount ) {
 		$currency = self::get_currency();
 
+		$plan_id = $customer->id . '-' . time();
+
 		$plan = Plan::create( [
+			'id'       => $plan_id,
+			'name'     => 'monthly donation',
 			'amount'   => $amount,
 			'currency' => $currency,
 			'interval' => 'month',
@@ -147,11 +160,24 @@ class FormController {
 		] );
 	}
 
+	/**
+	 * Helper function that returns the currency that Stripe should use
+	 */
 	private static function get_currency() {
 		$locale = Settings::get( Settings::SETTINGS_STRIPE, Settings::FIELD_CURRENCY, setlocale( LC_MONETARY, '0' ) );
 		return Locales::get_currency_symbol( $locale, true );
 	}
 
+	/**
+	 * Helper function that returns the scalar number to by which the amount should be multiplied
+	 */
+	private static function get_currency_scale() {
+		return Settings::get( Settings::SETTINGS_STRIPE, Settings::FIELD_CURRENCY_SCALE, 100 );
+	}
+
+	/**
+	 * Helper function that returns the statement descriptor that Stripe should use
+	 */
 	private static function get_statement_descriptor() {
 		return substr( Settings::get( Settings::SETTINGS_STRIPE, Settings::FIELD_STATEMENT_DESCRIPTOR ), 0, 22 );
 	}

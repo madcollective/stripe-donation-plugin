@@ -4,6 +4,35 @@ import addClass    from 'add-class';
 import hasClass    from 'has-class';
 import delegate    from 'delegate';
 
+/**
+ * From http://stackoverflow.com/a/26556347/4085004
+ */
+function paramsFromForm(form) {
+	// Filter the form elements that we want
+	var elements = []
+		.filter.call(form.elements, function(el) {
+			// Filter out checkboxes/radios that aren't checked
+			return (
+				el.checked || (
+					el.type !== 'checkbox' &&
+					el.type !== 'radio'
+				)
+			);
+		})
+		.filter(function(el) { return !!el.name; }) // Nameless elements die.
+		.filter(function(el) { return !el.disabled; }); // Disabled elements die.
+
+	// Build a parameters string
+	return elements.map(function(el) {
+		// Map each field into a name=value string, make sure to properly escape!
+		return encodeURIComponent(el.name) + '=' + encodeURIComponent(el.value);
+	}).join('&');
+}
+
+/**
+ * Initializes the form behavior of requesting a Stripe token and submitting to
+ *   the form controller via ajax
+ */
 function initSubmission() {
 	const form = document.querySelector('#stripe-donation-form');
 	const submit = form.querySelector('.submit');
@@ -39,8 +68,33 @@ function initSubmission() {
 			form.appendChild(input);
 
 			// Submit the form
-			form.submit();
+			ajaxSubmit();
 		}
+	}
+
+	function ajaxSubmit() {
+		const url = form.action;
+		const xhr = new XMLHttpRequest();
+		const params = paramsFromForm(form);
+
+		xhr.open('POST', url);
+		xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		xhr.addEventListener('load', onResponse);
+		xhr.addEventListener('error', onError);
+		xhr.send(params);
+	}
+
+	function onResponse(event) {
+		// Re-enable submission
+		submit.removeAttribute('disabled');
+
+		console.log(event.target);
+	}
+
+	function onError(event) {
+		// Re-enable submission
+		submit.removeAttribute('disabled');
+
 	}
 }
 

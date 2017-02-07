@@ -28,13 +28,18 @@ class Locales {
 
 		return array_map( function($l) {
 			$parts = explode( '.' , $l );
-			$locale_stem = $parts[0];
-			list( $lcode , $ccode ) = explode( '_' , $locale_stem );
+			$locale_stem = $parts ? $parts[0] : $l;
+			$lang_and_country = explode( '_' , $locale_stem );
+
+			if ( count( $lang_and_country ) < 2 )
+				return [ 'locale' => $l ];
+
+			list( $lcode , $ccode ) = $lang_and_country;
 
 			return [
 				'locale' => $l,
 				'locale_stem' => $locale_stem,
-				'encoding' => count( $parts ) ? $parts[1] : '',
+				'encoding' => ( $parts and count( $parts ) ) ? $parts[1] : '',
 				'country_code' => $ccode,
 				'country' => self::$country_codes[$ccode],
 				'lang' => strtolower($lcode)
@@ -47,7 +52,12 @@ class Locales {
 
 		if ( $utf8_only ) {
 			$locales = array_filter( $locales, function( $l ) {
-				return ( $l['encoding'] === 'UTF-8' || $l['encoding'] === 'utf8' );
+				return (
+					isset( $l['encoding'] ) && (
+						$l['encoding'] === 'UTF-8' ||
+						$l['encoding'] === 'utf8'
+					)
+				);
 			} );
 		}
 
@@ -136,7 +146,7 @@ class Locales {
 
 		Locales::pop();
 
-		return $currency_symbol;
+		return trim( $currency_symbol );
 	}
 
 	private static $country_codes = [
