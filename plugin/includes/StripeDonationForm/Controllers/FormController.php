@@ -30,10 +30,10 @@ class FormController {
 		$stripe_token = sanitize_text_field( $_POST['stripe_token'] );
 
 		$amount  = sanitize_text_field( $_POST['amount'] );
-		$monthly = sanitize_text_field( $_POST['monthly'] );
 		$name    = sanitize_text_field( $_POST['name'] );
 		$email   = sanitize_text_field( $_POST['email'] );
 		$phone   = sanitize_text_field( $_POST['phone'] );
+		$monthly = isset( $_POST['monthly'] ) ? sanitize_text_field( $_POST['monthly'] ) : null;
 
 		// Transform and determine useful things from input
 		$amount = floatval( $amount ) * self::get_currency_scale();

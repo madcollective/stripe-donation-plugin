@@ -39,7 +39,7 @@ class Locales {
 			return [
 				'locale' => $l,
 				'locale_stem' => $locale_stem,
-				'encoding' => ( $parts and count( $parts ) ) ? $parts[1] : '',
+				'encoding' => ( $parts and count( $parts ) > 1 ) ? $parts[1] : '',
 				'country_code' => $ccode,
 				'country' => self::$country_codes[$ccode],
 				'lang' => strtolower($lcode)
