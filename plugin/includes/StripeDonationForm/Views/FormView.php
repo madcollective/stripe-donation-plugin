@@ -89,7 +89,7 @@ class FormView {
 	 * @return string Partial form HTML
 	 */
 	private static function render_amount_fields( $options ) {
-		$international = ( $options['use_international_currency_symbol'] === 'on' );
+		$international = $options['use_international_currency_symbol'];
 
 		$currency_symbol = Locales::get_currency_symbol( $options['locale'], $international );
 
@@ -154,7 +154,7 @@ class FormView {
 						<input type="checkbox" name="monthly">
 						<span>
 							<?php _e( 'Make this my monthly donation.', 'stripe-donation-form' ); ?>
-							<small><?php echo $options['monthly_note']; ?></small>
+							<small><?php echo $options['monthly_note_text']; ?></small>
 						</span>
 					</label>
 				</div>

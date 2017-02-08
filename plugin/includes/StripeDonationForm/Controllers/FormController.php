@@ -21,6 +21,7 @@ class FormController {
 	const FORM_ACTION = 'post_donate';
 
 	const MIN_DONATION_AMOUNT = 1;
+	const PHONE_NUMBER_REGEX = '/^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$/';
 
 	/**
 	 * Handles post requests for the donate action
@@ -36,11 +37,11 @@ class FormController {
 		$monthly = isset( $_POST['monthly'] ) ? sanitize_text_field( $_POST['monthly'] ) : null;
 
 		// Transform and determine useful things from input
-		$amount = floatval( $amount ) * self::get_currency_scale();
+		$amount = doubleval( $amount ) * self::get_currency_scale();
 		$is_monthly = ( $monthly === 'on' );
 
 		// Validate input
-		$validation = self::validate_post_donate( $amount, $is_monthly, $name, $email, $phone );
+		$validation = self::validate_post_donate( compact( 'amount', 'is_monthly', 'name', 'email', 'phone' ) );
 
 		// Process donation if valid or return errors if not
 		if ( $validation === true ) {
@@ -59,14 +60,13 @@ class FormController {
 			// Build our response
 			$response = [
 				'success' => true,
-				'stripe_token' => $stripe_token,
+				'success_message' => Settings::get( 'success_message' ),
 			];
 		}
 		else {
 			// Build our response
 			$response = [
 				'errors' => $validation,
-				'stripe_token' => $stripe_token,
 			];
 		}
 
@@ -78,11 +78,25 @@ class FormController {
 	 * Validates input for post_donate, returning TRUE on success and an array of
 	 *   of errors if there are validation issues.
 	 */
-	private static function validate_post_donate( $amount, $is_monthly, $name, $email, $phone ) {
-		$errors = [];
+	private static function validate_post_donate( $input ) {
+		$errors = array_reduce(
+			self::get_required_fields(),
+			function( $errors, $key ) use ( $input ) {
+				if ( ! $input[$key] ) {
+					return array_merge( $errors, [
+						[
+							'field' => $key,
+							'error' => str_replace( '%s', $key, __( 'The %s field is required.', 'stripe-donation-form' ) ),
+						]
+					] );
+				}
+				return $errors;
+			},
+			[]
+		);
 
-		if ( $amount < self::MIN_DONATION_AMOUNT ) {
-			$locale = Settings::get( Settings::SETTINGS_STRIPE, Settings::FIELD_CURRENCY, setlocale( LC_MONETARY, '0' ) );
+		if ( $input['amount'] < self::MIN_DONATION_AMOUNT ) {
+			$locale = Settings::get( 'locale' );
 			$min_amount = Locales::format_money( self::MIN_DONATION_AMOUNT, 0, $locale, false );
 			$errors[] = [
 				'field' => 'amount',
@@ -90,14 +104,14 @@ class FormController {
 			];
 		}
 
-		if ( ! filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
+		if ( ! filter_var( $input['email'], FILTER_VALIDATE_EMAIL ) ) {
 			$errors[] = [
 				'field' => 'email',
 				'error' => __( 'Invalid email provided.', 'stripe-donation-form' ),
 			];
 		}
 
-		if ( ! preg_match( '/^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$/', $phone ) ) {
+		if ( ! preg_match( self::PHONE_NUMBER_REGEX, $input['phone'] ) ) {
 			$errors[] = [
 				'field' => 'phone',
 				'error' => __( 'Invalid phone number provided.', 'stripe-donation-form' ),
@@ -164,7 +178,7 @@ class FormController {
 	 * Helper function that returns the currency that Stripe should use
 	 */
 	private static function get_currency() {
-		$locale = Settings::get( Settings::SETTINGS_STRIPE, Settings::FIELD_CURRENCY, setlocale( LC_MONETARY, '0' ) );
+		$locale = Settings::get( 'locale' );
 		return Locales::get_currency_symbol( $locale, true );
 	}
 
@@ -172,14 +186,24 @@ class FormController {
 	 * Helper function that returns the scalar number to by which the amount should be multiplied
 	 */
 	private static function get_currency_scale() {
-		return Settings::get( Settings::SETTINGS_STRIPE, Settings::FIELD_CURRENCY_SCALE, 100 );
+		return Settings::get( 'currency_scale' );
 	}
 
 	/**
 	 * Helper function that returns the statement descriptor that Stripe should use
 	 */
 	private static function get_statement_descriptor() {
-		return substr( Settings::get( Settings::SETTINGS_STRIPE, Settings::FIELD_STATEMENT_DESCRIPTOR ), 0, 22 );
+		return substr( Settings::get( 'statement_descriptor' ), 0, 22 );
+	}
+
+	private static function get_required_fields() {
+		$required_fields = [ 'amount' ];
+
+		if ( Settings::get( 'require_email' ) ) array_push( $required_fields, 'email' );
+		if ( Settings::get( 'require_name'  ) ) array_push( $required_fields, 'name'  );
+		if ( Settings::get( 'require_phone' ) ) array_push( $required_fields, 'phone' );
+
+		return $required_fields;
 	}
 
 }

@@ -36,6 +36,7 @@ function paramsFromForm(form) {
 function initSubmission() {
 	const form = document.querySelector('#stripe-donation-form');
 	const submit = form.querySelector('.submit');
+	const errorsElement = form.querySelector('.sdf-payment-errors');
 
 	form.addEventListener('submit', (event) => {
 		// Disable the submit button to prevent repeated clicks
@@ -51,7 +52,7 @@ function initSubmission() {
 	function stripeResponseHandler(status, response) {
 		if (response.error) { // Problem!
 			// Show the errors on the form
-			form.querySelector('.sdf-payment-errors').textContent = response.error.message;
+			errorsElement.textContent = response.error.message;
 
 			// Re-enable submission
 			submit.removeAttribute('disabled');
@@ -61,11 +62,14 @@ function initSubmission() {
 			const token = response.id;
 
 			// Insert the token ID into the form so it gets submitted to the server
-			const input = document.createElement('input');
-			input.setAttribute('type', 'hidden');
-			input.setAttribute('name', 'stripe_token');
+			var input = form.querySelector('input[name="stripe_token"]');
+			if (!input) {
+				input = document.createElement('input');
+				input.setAttribute('type', 'hidden');
+				input.setAttribute('name', 'stripe_token');
+				form.appendChild(input);
+			}
 			input.value = token;
-			form.appendChild(input);
 
 			// Submit the form
 			ajaxSubmit();
@@ -87,6 +91,13 @@ function initSubmission() {
 	function onResponse(event) {
 		// Re-enable submission
 		submit.removeAttribute('disabled');
+
+		if (event.target.status === 200) {
+			
+		}
+		else {
+			errorsElement.textContent = event.target.statusText;
+		}
 
 		console.log(event.target);
 	}

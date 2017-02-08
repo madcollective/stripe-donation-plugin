@@ -9,8 +9,7 @@ use StripeDonationForm\Views\FormView;
 class StripeDonationForm {
 
 	public static function form( $options=[] ) {
-		$settings = Settings::get_form_settings();
-		echo FormView::render( $settings, $options );
+		echo FormView::render( Settings::get_form_settings(), $options );
 	}
 
 }
