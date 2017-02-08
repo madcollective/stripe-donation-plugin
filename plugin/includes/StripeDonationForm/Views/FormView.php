@@ -2,6 +2,7 @@
 
 namespace StripeDonationForm\Views;
 
+use StripeDonationForm\Settings;
 use StripeDonationForm\Controllers\FormController;
 use StripeDonationForm\Tools\Locales;
 
@@ -13,40 +14,18 @@ use StripeDonationForm\Tools\Locales;
 class FormView {
 
 	/**
-	 * @var array    $default_form_options    The default options for FormView::render
-	 */
-	public static $default_form_options = [
-		'preset_amounts' => [
-			25, 150, 500, 1000
-		],
-		'default_amount' => 150,
-		'amounts_as_select' => false,
-		'show_preset_amounts' => true,
-		'allow_custom_amount' => true,
-		'allow_monthly_donation' => true,
-		'ask_for_email' => true,
-		'ask_for_name' => true,
-		'ask_for_phone' => false,
-		'require_email' => false,
-		'require_name' => false,
-		'require_phone' => false,
-		'custom_amount_label' => null,
-	];
-
-	/**
 	 * Renders the form
 	 *
 	 * @return string Form HTML
 	 */
-	public static function render( $settings, $options=[] ) {
+	public static function render( $options=[] ) {
 		// Start with the default options and override with saved settings and then passed options
-		$options = array_merge( self::$default_form_options, $settings, $options );
+		$options = array_merge( Settings::get_form_settings(), $options );
 
 		// If we're allowing a monthly donation, we should ask for
 		if ( $options['allow_monthly_donation'] ) {
 			$options['ask_for_email'] = true;
 			$options['ask_for_name'] = true;
-			$options['ask_for_phone'] = true;
 		}
 
 		$action = admin_url( 'admin-ajax.php' ) . '?action=' . FormController::FORM_ACTION;
@@ -115,7 +94,7 @@ class FormView {
 								<?php foreach ( $amounts as $key => $value ) : ?>
 									<option
 										value="<?php echo $key; ?>"
-										<?php if ( $key === $options['default_amount'] ) echo 'selected'; ?>>
+										<?php if ( $key == $options['default_amount'] ) echo 'selected'; ?>>
 										<?php echo $value; ?>
 									</option>
 								<?php endforeach; ?>
@@ -130,7 +109,7 @@ class FormView {
 											name="preset-amount"
 											value="<?php echo $key; ?>"
 											id="<?php echo $id; ?>"
-											<?php if ( $key === $options['default_amount'] ) echo 'checked'; ?>>
+											<?php if ( $key == $options['default_amount'] ) echo 'checked'; ?>>
 										<label for="<?php echo $id; ?>"><?php echo $value; ?></label>
 									</li>
 								<?php endforeach; ?>

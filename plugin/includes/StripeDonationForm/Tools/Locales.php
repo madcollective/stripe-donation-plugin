@@ -123,11 +123,11 @@ class Locales {
 
 		if ( is_array( $amounts ) ) {
 			$output = array_map( function( $amount ) use ( $currency_format ) {
-				return money_format( $currency_format, $amount );
+				return money_format( $currency_format, doubleval( $amount ) );
 			}, $amounts );
 		}
 		else
-			$output = money_format( $currency_format, $amounts );
+			$output = money_format( $currency_format, doubleval( $amounts ) );
 
 		Locales::pop();
 

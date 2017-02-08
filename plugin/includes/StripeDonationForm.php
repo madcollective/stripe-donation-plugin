@@ -1,6 +1,5 @@
 <?php
 
-use StripeDonationForm\Settings;
 use StripeDonationForm\Views\FormView;
 
 /**
@@ -9,7 +8,7 @@ use StripeDonationForm\Views\FormView;
 class StripeDonationForm {
 
 	public static function form( $options=[] ) {
-		echo FormView::render( Settings::get_form_settings(), $options );
+		echo FormView::render( $options );
 	}
 
 }
