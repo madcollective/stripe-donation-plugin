@@ -53,32 +53,34 @@ class FormView {
 
 		ob_start();
 		?>
-			<form action="<?php echo $action; ?>" method="POST" id="stripe-donation-form">
-				<span class="sdf-payment-errors"></span>
+			<div class="sdf-form-wrapper">
+				<form action="<?php echo $action; ?>" method="POST" id="stripe-donation-form">
+					<span class="sdf-payment-errors"></span>
 
-				<fieldset class="sdf-donation-details-fieldset">
-					<legend><?php _e( 'Donation Details', 'stripe-donation-form' ); ?></legend>
-					<?php echo self::render_amount_fields( $options ) ?>
-				</fieldset>
-
-				<fieldset class="sdf-payment-info-fieldset">
-					<legend><?php _e( 'Payment Information', 'stripe-donation-form' ); ?></legend>
-					<?php echo self::render_payment_info_fields( $options ) ?>
-				</fieldset>
-
-				<?php if ( $options['ask_for_name'] || $options['ask_for_email'] || $options['ask_for_phone'] ) : ?>
-					<fieldset class="sdf-personal-info-fieldset">
-						<legend><?php _e( 'Personal Information', 'stripe-donation-form' ); ?></legend>
-						<?php echo self::render_personal_info_fields( $options ) ?>
+					<fieldset class="sdf-donation-details-fieldset">
+						<legend><?php _e( 'Donation Details', 'stripe-donation-form' ); ?></legend>
+						<?php echo self::render_amount_fields( $options ) ?>
 					</fieldset>
-				<?php endif; ?>
 
-				<button type="submit" class="submit"><?php _e( 'Submit Payment', 'stripe-donation-form' ); ?></button>
-			</form>
+					<fieldset class="sdf-payment-info-fieldset">
+						<legend><?php _e( 'Payment Information', 'stripe-donation-form' ); ?></legend>
+						<?php echo self::render_payment_info_fields( $options ) ?>
+					</fieldset>
 
-			<script type="text/javascript">
-				Stripe.setPublishableKey('<?php echo $options['publishable_key']; ?>');
-			</script>
+					<?php if ( $options['ask_for_name'] || $options['ask_for_email'] || $options['ask_for_phone'] ) : ?>
+						<fieldset class="sdf-personal-info-fieldset">
+							<legend><?php _e( 'Personal Information', 'stripe-donation-form' ); ?></legend>
+							<?php echo self::render_personal_info_fields( $options ) ?>
+						</fieldset>
+					<?php endif; ?>
+
+					<button type="submit" class="submit"><?php _e( 'Submit Payment', 'stripe-donation-form' ); ?></button>
+				</form>
+
+				<script type="text/javascript">
+					Stripe.setPublishableKey('<?php echo $options['publishable_key']; ?>');
+				</script>
+			</div>
 		<?php
 		return ob_get_clean();
 	}
@@ -144,7 +146,7 @@ class FormView {
 							<?php echo ( $options['custom_amount_label'] ) ? $options['custom_amount_label'] : __( 'Your Gift Amount', 'stripe-donation-form' ); ?>
 							<span class="currency-symbol"><?php echo $currency_symbol; ?></span>
 						</span>
-						<input type="number" name="amount" pattern="^\d+(\.|\,)\d{2}$" min="1">
+						<input type="number" name="amount" pattern="^\d+(\.|\,)\d{2}$" min="1" required>
 					</label>
 				</div>
 			<?php endif; ?>
@@ -172,26 +174,26 @@ class FormView {
 		ob_start();
 		?>
 			<?php if ( $options['ask_for_name'] ) : ?>
-				<div class="form-row sdf-name" <?php if ( $options['require_name'] ) echo 'required'; ?>>
+				<div class="form-row sdf-name">
 					<label>
 						<span><?php _e( 'Name', 'stripe-donation-form' ); ?></span>
-						<input type="text" name="name">
+						<input type="text" name="name" <?php if ( $options['require_name'] ) echo 'required'; ?>>
 					</label>
 				</div>
 			<?php endif; ?>
 			<?php if ( $options['ask_for_email'] ) : ?>
-				<div class="form-row sdf-email" <?php if ( $options['require_email'] ) echo 'required'; ?>>
+				<div class="form-row sdf-email">
 					<label>
 						<span><?php _e( 'Email Address', 'stripe-donation-form' ); ?></span>
-						<input type="email" name="email">
+						<input type="email" name="email" <?php if ( $options['require_email'] ) echo 'required'; ?>>
 					</label>
 				</div>
 			<?php endif; ?>
 			<?php if ( $options['ask_for_phone'] ) : ?>
-				<div class="form-row sdf-phone" <?php if ( $options['require_phone'] ) echo 'required'; ?>>
+				<div class="form-row sdf-phone">
 					<label>
 						<span><?php _e( 'Phone Number', 'stripe-donation-form' ); ?></span>
-						<input type="tel" name="phone" pattern="^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$">
+						<input type="tel" name="phone" <?php if ( $options['require_phone'] ) echo 'required'; ?> pattern="^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$">
 					</label>
 				</div>
 			<?php endif; ?>
@@ -210,30 +212,30 @@ class FormView {
 			<div class="form-row sdf-card-number">
 				<label>
 					<span><?php _e( 'Card Number', 'stripe-donation-form' ); ?></span>
-					<input type="number" size="20" data-stripe="number" pattern="[0-9]{13,16}">
+					<input type="number" size="20" data-stripe="number" pattern="[0-9]{13,16}" required>
 				</label>
 			</div>
 
 			<div class="form-row sdf-expiration">
 				<label>
 					<span><?php _e( 'Expiration (MM/YY)', 'stripe-donation-form' ); ?></span>
-					<input type="number" size="2" data-stripe="exp_month" pattern="\d{2}">
+					<input type="number" size="2" data-stripe="exp_month" pattern="\d{2}" required>
 					<span class="sdf-slash"> / </span>
-					<input type="number" size="2" data-stripe="exp_year" pattern="\d{2}">
+					<input type="number" size="2" data-stripe="exp_year" pattern="\d{2}" required>
 				</label>
 			</div>
 
 			<div class="form-row sdf-cvc">
 				<label>
 					<span><?php _e( 'CVC', 'stripe-donation-form' ); ?></span>
-					<input type="number" size="4" data-stripe="cvc">
+					<input type="number" size="4" data-stripe="cvc" required>
 				</label>
 			</div>
 
 			<div class="form-row sdf-postal-code">
 				<label>
 					<span><?php _e( 'Billing ZIP Code', 'stripe-donation-form' ); ?></span>
-					<input type="text" size="6" data-stripe="address_zip">
+					<input type="text" size="6" data-stripe="address_zip" required>
 				</label>
 			</div>
 		<?php

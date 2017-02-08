@@ -41,6 +41,7 @@ function initSubmission() {
 	form.addEventListener('submit', (event) => {
 		// Disable the submit button to prevent repeated clicks
 		submit.setAttribute('disabled', 'disabled');
+		clearErrors();
 
 		// Request a token from Stripe
 		Stripe.card.createToken(form, stripeResponseHandler);
@@ -93,10 +94,14 @@ function initSubmission() {
 		submit.removeAttribute('disabled');
 
 		if (event.target.status === 200) {
-			
+			const response = JSON.parse(event.target.response);
+			if (response.success)
+				form.parentNode.innerHTML = response.success_message;
+			else
+				response.errors.forEach(showError);
 		}
 		else {
-			errorsElement.textContent = event.target.statusText;
+			errorsElement.innerHTML = event.target.statusText;
 		}
 
 		console.log(event.target);
@@ -105,13 +110,39 @@ function initSubmission() {
 	function onError(event) {
 		// Re-enable submission
 		submit.removeAttribute('disabled');
+		errorsElement.innerHTML = 'Error sending form data.';
+		console.error(event);
+	}
 
+	function clearErrors() {
+		errorsElement.innerHTML = '';
+
+		[].forEach.call(form.querySelector('.sdf-field-error'), (el) => {
+			el.parentNode.removeChild(el);
+		});
+	}
+
+	function showError(error) {
+		if (error.field) {
+			const field = form.querySelector('[name="' + error.field + '"]');
+			if (field) {
+				const errorElement = document.createElement('div');
+				errorElement.className = 'sdf-field-error';
+				errorElement.innerHTML = error.error;
+				field.parentNode.parentNode.appendChild(errorElement);
+			}
+		}
+		else {
+			errorsElement.innerHTML += '<p>' + error.error + '</p>';
+		}
 	}
 }
 
 function initAmounts() {
 	const radioList   = document.querySelector('.sdf-radio-button-list');
 	const amountInput = document.querySelector('input[name="amount"]');
+	var presetAmounts;
+	var setPresetAmount;
 
 	function valueChanged(event) {
 		if (event.target.value !== 'custom')
@@ -126,6 +157,17 @@ function initAmounts() {
 
 		// Set default amount
 		amountInput.value = radioList.querySelector('input:checked').value;
+
+		// Create list of preset amounts
+		presetAmounts = [].map.call(radioList.querySelectorAll('input'), (el) => el.value );
+
+		// Define the function to set the current preset amount
+		setPresetAmount = function(amount) {
+			[].forEach.call(radioList.querySelectorAll('input'), (el) => {
+				console.log(el.value === amount ? 'hi' : 'no')
+				el.checked = (el.value === amount);
+			});
+		};
 	}
 	else {
 		const presetAmountSelect = document.querySelector('select[name="preset-amount"]');
@@ -135,7 +177,25 @@ function initAmounts() {
 
 		// Set default amount
 		amountInput.value = presetAmountSelect.value;
+
+		// Create list of preset amounts
+		presetAmounts = [].map.call(presetAmountSelect.querySelectorAll('option'), (el) => el.value );
+
+		// Define the function to set the current preset amount
+		setPresetAmount = function(amount) {
+			presetAmountSelect.value = amount;
+		};
 	}
+
+	function isPresetAmount(amount) {
+		return presetAmounts.indexOf(amount) !== -1;
+	}
+
+	amountInput.addEventListener('change', (event) => {
+		setPresetAmount(
+			isPresetAmount(event.target.value) ? event.target.value : 'custom'
+		);
+	});
 }
 
 function initCardNumber() {
