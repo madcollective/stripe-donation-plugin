@@ -8,15 +8,11 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @link              https://www.madcollective.com
- * @since             0.1.0
- * @package           StripeDonationForm
- *
  * @wordpress-plugin
  * Plugin Name:       Stripe Donation Form
  * Plugin URI:        https://www.madcollective.com
  * Description:       A simple donation form powered by Stripe that allows users to make one-time and monthly donations
- * Version:           0.1.0
+ * Version:           0.9.0
  * Author:            Madison Ave. Collective
  * Author URI:        https://www.madcollective.com
  * License:           MIT

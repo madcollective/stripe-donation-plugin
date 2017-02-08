@@ -20,6 +20,7 @@
     "gulp-postcss": "^6.1.1",
     "gulp-sourcemaps": "^2.4.0",
     "gulp-wp-pot": "^2.0.3",
+    "gulp-zip": "^4.0.0",
     "has-class": "^1.0.6",
     "minimist": "^1.2.0",
     "normalize.css": "^5.0.0",

@@ -8,3 +8,4 @@ npm-debug.log
 themes/
 plugin/vendor
 plugin/dist
+dist/

@@ -55,6 +55,10 @@ containers respectively.
 
 In order to get currency formatting to work on the test server, one must manually choose locales to install. It doesn't come with any. First, log into the WordPress container with `docker exec -it stripe_donation_form_wp bash`. Once inside, run `dpkg-reconfigure locales` and follow the prompts to choose appropriate locales.
 
+### Zipping it up
+
+To package and ship the plugin, make sure to build the static assets with the `--production` flag, and then run `gulp zip`, and it will create a zip file of the plugin folder under `dist`.
+
 ## Installation for production use
 
 Get the production version at the plugin's wordpress.org page _____

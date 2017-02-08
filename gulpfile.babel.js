@@ -4,6 +4,7 @@ import path     from 'path';
 
 import {taskJs}  from './tasks/javascript';
 import {taskPot} from './tasks/pot';
+import {taskZip} from './tasks/zip';
 
 const argv = minimist(process.argv.slice(2));
 
@@ -32,12 +33,21 @@ const config = {
 
 	// I18n
 	potDestination: `plugin/languages/${pluginName}.pot`,
+
+	// Zip
+	zipGlob: [
+		'plugin/*',
+		'!.DS_Store',
+		'!Thumbs.db',
+	],
+	zipDestination: path.join(__dirname, 'dist'),
 };
 
 gulp.task('js-public', taskJs(config.jsPublicEntry, config.jsDistDir, config.jsPublicDistFilename, config.mapsEnabled, config.nodeModulesDir));
 gulp.task('js-admin', taskJs(config.jsAdminEntry, config.jsDistDir, config.jsAdminDistFilename, config.mapsEnabled, config.nodeModulesDir));
 gulp.task('js', ['js-public', 'js-admin']);
 gulp.task('pot', taskPot(config.phpGlobs, pluginName, config.potDestination));
+gulp.task('zip', taskZip(config.zipGlob, pluginName, config.zipDestination));
 
 gulp.task('watch', ['js-public', 'js-admin'], () => {
 	gulp.watch([
