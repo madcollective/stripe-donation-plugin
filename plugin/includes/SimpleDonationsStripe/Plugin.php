@@ -1,9 +1,9 @@
 <?php
 
-namespace StripeDonationForm;
+namespace SimpleDonationsStripe;
 
-use StripeDonationForm\Controllers\FormController;
-use StripeDonationForm\Tools;
+use SimpleDonationsStripe\Controllers\FormController;
+use SimpleDonationsStripe\Tools;
 
 /**
  * The core plugin class
@@ -38,22 +38,22 @@ class Plugin {
 	 * The loader that's responsible for maintaining and registering all hooks that power
 	 * the plugin.
 	 *
-	 * @var StripeDonationForm\Tools\Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var SimpleDonationsStripe\Tools\Loader    $loader    Maintains and registers all hooks for the plugin.
 	 */
 	private $loader;
 
 	/**
-	 * @var StripeDonationForm\I18n    $i18n    Loads internationalization files
+	 * @var SimpleDonationsStripe\I18n    $i18n    Loads internationalization files
 	 */
 	private $i18n;
 
 	/**
-	 * @var StripeDonationForm\Assets    $assets    Holds functions for loading standard assets
+	 * @var SimpleDonationsStripe\Assets    $assets    Holds functions for loading standard assets
 	 */
 	private $assets;
 
 	/**
-	 * @var StripeDonationForm\Assets    $settings    Handles settings saving/loading and page rendering
+	 * @var SimpleDonationsStripe\Assets    $settings    Handles settings saving/loading and page rendering
 	 */
 	private $settings;
 
@@ -100,8 +100,8 @@ class Plugin {
 		$this->loader->add_action( 'wp_enqueue_scripts', $this->assets, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $this->assets, 'enqueue_scripts' );
 
-		$this->loader->add_action( 'wp_ajax_nopriv_' . FormController::FORM_ACTION, 'StripeDonationForm\Controllers\FormController', 'post_donate' );
-		$this->loader->add_action( 'wp_ajax_'        . FormController::FORM_ACTION, 'StripeDonationForm\Controllers\FormController', 'post_donate' );
+		$this->loader->add_action( 'wp_ajax_nopriv_' . FormController::FORM_ACTION, 'SimpleDonationsStripe\Controllers\FormController', 'post_donate' );
+		$this->loader->add_action( 'wp_ajax_'        . FormController::FORM_ACTION, 'SimpleDonationsStripe\Controllers\FormController', 'post_donate' );
 	}
 
 	/**

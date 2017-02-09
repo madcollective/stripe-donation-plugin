@@ -36,7 +36,7 @@ function paramsFromForm(form) {
 function initSubmission() {
 	const form = document.querySelector('#stripe-donation-form');
 	const submit = form.querySelector('.submit');
-	const errorsElement = form.querySelector('.sdf-payment-errors');
+	const errorsElement = form.querySelector('.sds-payment-errors');
 
 	form.addEventListener('submit', (event) => {
 		// Disable the submit button to prevent repeated clicks
@@ -108,7 +108,7 @@ function initSubmission() {
 	function showSuccess(successMessage) {
 		const wrapper = form.parentNode;
 		const success = document.createElement('div');
-		success.className = 'sdf-success-message';
+		success.className = 'sds-success-message';
 		success.innerHTML = successMessage;
 		wrapper.innerHTML = '';
 		wrapper.appendChild(success);
@@ -127,7 +127,7 @@ function initSubmission() {
 	function clearErrors() {
 		errorsElement.innerHTML = '';
 
-		const fieldErrors = form.querySelector('.sdf-field-error');
+		const fieldErrors = form.querySelector('.sds-field-error');
 		if (fieldErrors) {
 			[].forEach.call(fieldErrors, (el) => {
 				el.parentNode.removeChild(el);
@@ -140,7 +140,7 @@ function initSubmission() {
 			const field = form.querySelector('[name="' + error.field + '"]');
 			if (field) {
 				const errorElement = document.createElement('div');
-				errorElement.className = 'sdf-field-error';
+				errorElement.className = 'sds-field-error';
 				errorElement.innerHTML = error.error;
 				field.parentNode.parentNode.appendChild(errorElement);
 			}
@@ -152,7 +152,7 @@ function initSubmission() {
 }
 
 function initAmounts() {
-	const radioList   = document.querySelector('.sdf-radio-button-list');
+	const radioList   = document.querySelector('.sds-radio-button-list');
 	const amountInput = document.querySelector('input[name="amount"]');
 	var presetAmounts;
 	var setPresetAmount;

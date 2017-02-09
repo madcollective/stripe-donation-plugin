@@ -18,7 +18,7 @@ services:
     container_name: stripe_donation_form_wp
     volumes:
       - "./.www:/var/www/html"
-      - "./plugin:/var/www/html/wp-content/plugins/stripe-donation-form"
+      - "./plugin:/var/www/html/wp-content/plugins/simple-donations-stripe"
       - "./docker-scripts:/var/setup-scripts"
     links:
       - db

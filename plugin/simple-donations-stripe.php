@@ -9,14 +9,14 @@
  * that starts the plugin.
  *
  * @wordpress-plugin
- * Plugin Name:       Stripe Donation Form
+ * Plugin Name:       Simple Donations With Stripe
  * Plugin URI:        https://www.madcollective.com
  * Description:       A simple donation form powered by Stripe that allows users to make one-time and monthly donations
  * Version:           0.9.0
  * Author:            Madison Ave. Collective
  * Author URI:        https://www.madcollective.com
  * License:           MIT
- * Text Domain:       stripe-donation-form
+ * Text Domain:       simple-donations-stripe
  * Domain Path:       /languages
  */
 
@@ -33,7 +33,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/autoload.php';
 /**
  * Require the plugin's API class
  */
-require plugin_dir_path( __FILE__ ) . 'includes/StripeDonationForm.php';
+require plugin_dir_path( __FILE__ ) . 'includes/SimpleDonationsStripe.php';
 
 /**
  * Instantiate the core plugin class that is used to define internationalization,
@@ -41,6 +41,6 @@ require plugin_dir_path( __FILE__ ) . 'includes/StripeDonationForm.php';
  */
 call_user_func( function() {
 	$url = plugin_dir_url( __FILE__ );
-	$plugin = new StripeDonationForm\Plugin( 'stripe-donation-form', $url );
+	$plugin = new SimpleDonationsStripe\Plugin( 'simple-donations-stripe', $url );
 	$plugin->run();
 } );

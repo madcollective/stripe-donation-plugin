@@ -1,10 +1,10 @@
 <?php
 
-namespace StripeDonationForm\Views;
+namespace SimpleDonationsStripe\Views;
 
-use StripeDonationForm\Settings;
-use StripeDonationForm\Controllers\FormController;
-use StripeDonationForm\Tools\Locales;
+use SimpleDonationsStripe\Settings;
+use SimpleDonationsStripe\Controllers\FormController;
+use SimpleDonationsStripe\Tools\Locales;
 
 /**
  * Renders the form
@@ -32,28 +32,28 @@ class FormView {
 
 		ob_start();
 		?>
-			<div class="sdf-form-wrapper">
+			<div class="sds-form-wrapper">
 				<form action="<?php echo $action; ?>" method="POST" id="stripe-donation-form">
-					<span class="sdf-payment-errors"></span>
+					<span class="sds-payment-errors"></span>
 
-					<fieldset class="sdf-donation-details-fieldset">
-						<legend><?php _e( 'Donation Details', 'stripe-donation-form' ); ?></legend>
+					<fieldset class="sds-donation-details-fieldset">
+						<legend><?php _e( 'Donation Details', 'simple-donations-stripe' ); ?></legend>
 						<?php echo self::render_amount_fields( $options ) ?>
 					</fieldset>
 
-					<fieldset class="sdf-payment-info-fieldset">
-						<legend><?php _e( 'Payment Information', 'stripe-donation-form' ); ?></legend>
+					<fieldset class="sds-payment-info-fieldset">
+						<legend><?php _e( 'Payment Information', 'simple-donations-stripe' ); ?></legend>
 						<?php echo self::render_payment_info_fields( $options ) ?>
 					</fieldset>
 
 					<?php if ( $options['ask_for_name'] || $options['ask_for_email'] || $options['ask_for_phone'] ) : ?>
-						<fieldset class="sdf-personal-info-fieldset">
-							<legend><?php _e( 'Personal Information', 'stripe-donation-form' ); ?></legend>
+						<fieldset class="sds-personal-info-fieldset">
+							<legend><?php _e( 'Personal Information', 'simple-donations-stripe' ); ?></legend>
 							<?php echo self::render_personal_info_fields( $options ) ?>
 						</fieldset>
 					<?php endif; ?>
 
-					<button type="submit" class="submit"><?php _e( 'Submit Payment', 'stripe-donation-form' ); ?></button>
+					<button type="submit" class="submit"><?php _e( 'Submit Payment', 'simple-donations-stripe' ); ?></button>
 				</form>
 
 				<script type="text/javascript">
@@ -81,14 +81,14 @@ class FormView {
 
 		// Optionally append a "Custom" option to the end
 		if ( $options['allow_custom_amount'] )
-			$amounts['custom'] = __( 'Other', 'stripe-donation-form' );
+			$amounts['custom'] = __( 'Other', 'simple-donations-stripe' );
 
 		ob_start();
 		?>
 			<?php if ( $options['show_preset_amounts'] ) : ?>
-				<div class="form-row sdf-amount-presets">
+				<div class="form-row sds-amount-presets">
 					<label>
-						<span><?php _e( 'Your Gift Amount', 'stripe-donation-form' ); ?></span>
+						<span><?php _e( 'Your Gift Amount', 'simple-donations-stripe' ); ?></span>
 						<?php if ( $options['amounts_as_select'] ) : ?>
 							<select name="preset-amount">
 								<?php foreach ( $amounts as $key => $value ) : ?>
@@ -100,7 +100,7 @@ class FormView {
 								<?php endforeach; ?>
 							</select>
 						<?php else : ?>
-							<ul class="sdf-radio-button-list">
+							<ul class="sds-radio-button-list">
 								<?php foreach ( $amounts as $key => $value ) : ?>
 									<?php $id = 'donation-amount-' . $key; ?>
 									<li>
@@ -119,10 +119,10 @@ class FormView {
 				</div>
 			<?php endif; ?>
 			<?php if ( $options['allow_custom_amount'] ) : ?>
-				<div class="form-row sdf-amount">
+				<div class="form-row sds-amount">
 					<label>
 						<span>
-							<?php echo ( $options['custom_amount_label'] ) ? $options['custom_amount_label'] : __( 'Your Gift Amount', 'stripe-donation-form' ); ?>
+							<?php echo ( $options['custom_amount_label'] ) ? $options['custom_amount_label'] : __( 'Your Gift Amount', 'simple-donations-stripe' ); ?>
 							<span class="currency-symbol"><?php echo $currency_symbol; ?></span>
 						</span>
 						<input type="number" name="amount" pattern="^\d+(\.|\,)\d{2}$" min="1" required>
@@ -130,11 +130,11 @@ class FormView {
 				</div>
 			<?php endif; ?>
 			<?php if ( $options['allow_monthly_donation'] ) : ?>
-				<div class="form-row sdf-monthly">
+				<div class="form-row sds-monthly">
 					<label>
 						<input type="checkbox" name="monthly">
 						<span>
-							<?php _e( 'Make this my monthly donation.', 'stripe-donation-form' ); ?>
+							<?php _e( 'Make this my monthly donation.', 'simple-donations-stripe' ); ?>
 							<small><?php echo $options['monthly_note_text']; ?></small>
 						</span>
 					</label>
@@ -153,25 +153,25 @@ class FormView {
 		ob_start();
 		?>
 			<?php if ( $options['ask_for_name'] ) : ?>
-				<div class="form-row sdf-name">
+				<div class="form-row sds-name">
 					<label>
-						<span><?php _e( 'Name', 'stripe-donation-form' ); ?></span>
+						<span><?php _e( 'Name', 'simple-donations-stripe' ); ?></span>
 						<input type="text" name="name" <?php if ( $options['require_name'] ) echo 'required'; ?>>
 					</label>
 				</div>
 			<?php endif; ?>
 			<?php if ( $options['ask_for_email'] ) : ?>
-				<div class="form-row sdf-email">
+				<div class="form-row sds-email">
 					<label>
-						<span><?php _e( 'Email Address', 'stripe-donation-form' ); ?></span>
+						<span><?php _e( 'Email Address', 'simple-donations-stripe' ); ?></span>
 						<input type="email" name="email" <?php if ( $options['require_email'] ) echo 'required'; ?>>
 					</label>
 				</div>
 			<?php endif; ?>
 			<?php if ( $options['ask_for_phone'] ) : ?>
-				<div class="form-row sdf-phone">
+				<div class="form-row sds-phone">
 					<label>
-						<span><?php _e( 'Phone Number', 'stripe-donation-form' ); ?></span>
+						<span><?php _e( 'Phone Number', 'simple-donations-stripe' ); ?></span>
 						<input type="tel" name="phone" <?php if ( $options['require_phone'] ) echo 'required'; ?> pattern="^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$">
 					</label>
 				</div>
@@ -188,32 +188,32 @@ class FormView {
 	private static function render_payment_info_fields( $options ) {
 		ob_start();
 		?>
-			<div class="form-row sdf-card-number">
+			<div class="form-row sds-card-number">
 				<label>
-					<span><?php _e( 'Card Number', 'stripe-donation-form' ); ?></span>
+					<span><?php _e( 'Card Number', 'simple-donations-stripe' ); ?></span>
 					<input type="number" size="20" data-stripe="number" pattern="[0-9]{13,16}" required>
 				</label>
 			</div>
 
-			<div class="form-row sdf-expiration">
+			<div class="form-row sds-expiration">
 				<label>
-					<span><?php _e( 'Expiration (MM/YY)', 'stripe-donation-form' ); ?></span>
+					<span><?php _e( 'Expiration (MM/YY)', 'simple-donations-stripe' ); ?></span>
 					<input type="number" size="2" data-stripe="exp_month" pattern="\d{2}" required>
-					<span class="sdf-slash"> / </span>
+					<span class="sds-slash"> / </span>
 					<input type="number" size="2" data-stripe="exp_year" pattern="\d{2}" required>
 				</label>
 			</div>
 
-			<div class="form-row sdf-cvc">
+			<div class="form-row sds-cvc">
 				<label>
-					<span><?php _e( 'CVC', 'stripe-donation-form' ); ?></span>
+					<span><?php _e( 'CVC', 'simple-donations-stripe' ); ?></span>
 					<input type="number" size="4" data-stripe="cvc" required>
 				</label>
 			</div>
 
-			<div class="form-row sdf-postal-code">
+			<div class="form-row sds-postal-code">
 				<label>
-					<span><?php _e( 'Billing ZIP Code', 'stripe-donation-form' ); ?></span>
+					<span><?php _e( 'Billing ZIP Code', 'simple-donations-stripe' ); ?></span>
 					<input type="text" size="6" data-stripe="address_zip" required>
 				</label>
 			</div>

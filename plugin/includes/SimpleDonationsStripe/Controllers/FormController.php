@@ -1,9 +1,9 @@
 <?php
 
-namespace StripeDonationForm\Controllers;
+namespace SimpleDonationsStripe\Controllers;
 
-use StripeDonationForm\Settings;
-use StripeDonationForm\Tools\Locales;
+use SimpleDonationsStripe\Settings;
+use SimpleDonationsStripe\Tools\Locales;
 
 use Stripe\Stripe;
 use Stripe\Customer;
@@ -86,7 +86,7 @@ class FormController {
 					return array_merge( $errors, [
 						[
 							'field' => $key,
-							'error' => str_replace( '%s', $key, __( 'The %s field is required.', 'stripe-donation-form' ) ),
+							'error' => str_replace( '%s', $key, __( 'The %s field is required.', 'simple-donations-stripe' ) ),
 						]
 					] );
 				}
@@ -100,21 +100,21 @@ class FormController {
 			$min_amount = Locales::format_money( self::MIN_DONATION_AMOUNT, 0, $locale, false );
 			$errors[] = [
 				'field' => 'amount',
-				'error' => __( 'Donation amount must be at least', 'stripe-donation-form' ) . "$min_amount.",
+				'error' => __( 'Donation amount must be at least', 'simple-donations-stripe' ) . "$min_amount.",
 			];
 		}
 
 		if ( $input['email'] !== null && ! filter_var( $input['email'], FILTER_VALIDATE_EMAIL ) ) {
 			$errors[] = [
 				'field' => 'email',
-				'error' => __( 'Invalid email provided.', 'stripe-donation-form' ),
+				'error' => __( 'Invalid email provided.', 'simple-donations-stripe' ),
 			];
 		}
 
 		if ( $input['phone'] !== null && ! preg_match( self::PHONE_NUMBER_REGEX, $input['phone'] ) ) {
 			$errors[] = [
 				'field' => 'phone',
-				'error' => __( 'Invalid phone number provided.', 'stripe-donation-form' ),
+				'error' => __( 'Invalid phone number provided.', 'simple-donations-stripe' ),
 			];
 		}
 

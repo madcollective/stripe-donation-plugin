@@ -5,7 +5,7 @@
  */
 spl_autoload_register(function($class) {
 	// Project-specific namespace prefix
-	$prefix = 'StripeDonationForm';
+	$prefix = 'SimpleDonationsStripe';
 
 	// Base directory for the namespace prefix
 	$base_dir = __DIR__ . '/' . $prefix . '/';

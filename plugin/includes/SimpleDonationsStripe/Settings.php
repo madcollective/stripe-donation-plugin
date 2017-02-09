@@ -1,13 +1,13 @@
 <?php
 
-namespace StripeDonationForm;
+namespace SimpleDonationsStripe;
 
-use StripeDonationForm\Tools\Locales;
+use SimpleDonationsStripe\Tools\Locales;
 
 define('DEFAULT_LOCALE', setlocale( LC_MONETARY, '0' ));
 define('DEFAULT_STATEMENT_DESCRIPTOR', substr( get_bloginfo( 'name' ), 0, 22 ));
-define('DEFAULT_MONTHLY_NOTE', __( 'We will automatically receive your gift each month. If you ever wish to change the frequency or amount of your gift, please contact us.', 'stripe-donation-form' ));
-define('DEFAULT_SUCCESS_MESSAGE', '<p>' . __( 'Donation received. Thank you for your contribution!', 'stripe-donation-form' ) . '</p>' );
+define('DEFAULT_MONTHLY_NOTE', __( 'We will automatically receive your gift each month. If you ever wish to change the frequency or amount of your gift, please contact us.', 'simple-donations-stripe' ));
+define('DEFAULT_SUCCESS_MESSAGE', '<p>' . __( 'Donation received. Thank you for your contribution!', 'simple-donations-stripe' ) . '</p>' );
 
 /**
  * Functions for loading static assets
@@ -16,9 +16,9 @@ define('DEFAULT_SUCCESS_MESSAGE', '<p>' . __( 'Donation received. Thank you for 
  */
 class Settings {
 
-	const PAGE_MENU_SLUG  = 'stripe_donation_form_settings';
-	const SETTINGS_STRIPE = 'stripe_donation_form_stripe_settings';
-	const SETTINGS_FORM   = 'stripe_donation_form_form_settings';
+	const PAGE_MENU_SLUG  = 'sds_settings';
+	const SETTINGS_STRIPE = 'sds_stripe_settings';
+	const SETTINGS_FORM   = 'sds_form_settings';
 
 	private static $stripe_fields = [
 		'live_secret_key' => '',
@@ -70,62 +70,62 @@ class Settings {
 		$this->settings_api->set_sections([
 			[
 				'id' => self::SETTINGS_STRIPE,
-				'title' => __( 'Stripe Settings', 'stripe-donation-form' )
+				'title' => __( 'Stripe Settings', 'simple-donations-stripe' )
 			],
 			[
 				'id' => self::SETTINGS_FORM,
-				'title' => __( 'Form Settings', 'stripe-donation-form' )
+				'title' => __( 'Form Settings', 'simple-donations-stripe' )
 			]
 		]);
 
 		// Define the Stripe Settings fields
 		$this->settings_api->add_field( self::SETTINGS_STRIPE, [
 			'name'              => 'live_secret_key',
-			'label'             => __( 'Live Secret API Key', 'stripe-donation-form' ),
+			'label'             => __( 'Live Secret API Key', 'simple-donations-stripe' ),
 			'type'              => 'text',
 			'sanitize_callback' => 'sanitize_text_field',
 		] );
 		$this->settings_api->add_field( self::SETTINGS_STRIPE, [
 			'name'              => 'live_public_key',
-			'label'             => __( 'Live Publishable API Key', 'stripe-donation-form' ),
+			'label'             => __( 'Live Publishable API Key', 'simple-donations-stripe' ),
 			'type'              => 'text',
 			'sanitize_callback' => 'sanitize_text_field',
 		] );
 		$this->settings_api->add_field( self::SETTINGS_STRIPE, [
 			'name'              => 'test_mode',
-			'label'             => __( 'Enable Test Mode', 'stripe-donation-form' ),
-			'desc'              => __( 'Enabled (See <a href="https://stripe.com/docs/testing" target="_blank">https://stripe.com/docs/testing</a> for more info)', 'stripe-donation-form' ),
+			'label'             => __( 'Enable Test Mode', 'simple-donations-stripe' ),
+			'desc'              => __( 'Enabled (See <a href="https://stripe.com/docs/testing" target="_blank">https://stripe.com/docs/testing</a> for more info)', 'simple-donations-stripe' ),
 			'type'              => 'checkbox',
 		] );
 		$this->settings_api->add_field( self::SETTINGS_STRIPE, [
 			'name'              => 'test_secret_key',
-			'label'             => __( 'Test Secret API Key', 'stripe-donation-form' ),
+			'label'             => __( 'Test Secret API Key', 'simple-donations-stripe' ),
 			'type'              => 'text',
 			'sanitize_callback' => 'sanitize_text_field',
 		] );
 		$this->settings_api->add_field( self::SETTINGS_STRIPE, [
 			'name'              => 'test_public_key',
-			'label'             => __( 'Test Publishable API Key', 'stripe-donation-form' ),
+			'label'             => __( 'Test Publishable API Key', 'simple-donations-stripe' ),
 			'type'              => 'text',
 			'sanitize_callback' => 'sanitize_text_field',
 		] );
 		$this->settings_api->add_field( self::SETTINGS_STRIPE, [
 			'name'              => 'locale',
-			'label'             => __( 'Currency', 'stripe-donation-form' ),
-			'desc'              => __( 'List is based on locales available on your server', 'stripe-donation-form' ),
+			'label'             => __( 'Currency', 'simple-donations-stripe' ),
+			'desc'              => __( 'List is based on locales available on your server', 'simple-donations-stripe' ),
 			'type'              => 'select',
 			'options'           => Locales::get_currency_options(),
 		] );
 		$this->settings_api->add_field( self::SETTINGS_STRIPE, [
 			'name'              => 'use_international_currency_symbol',
-			'label'             => __( 'Currency Symbol', 'stripe-donation-form' ),
-			'desc'              => __( 'Use international currency symbol', 'stripe-donation-form' ),
+			'label'             => __( 'Currency Symbol', 'simple-donations-stripe' ),
+			'desc'              => __( 'Use international currency symbol', 'simple-donations-stripe' ),
 			'type'              => 'checkbox',
 		] );
 		$this->settings_api->add_field( self::SETTINGS_STRIPE, [
 			'name'              => 'currency_scale',
-			'label'             => __( 'Currency Scale', 'stripe-donation-form' ),
-			'desc'              => __( 'Number to multiply the amount by to get the smallest currency unit. For example, if the currency were USD, this value would be 100 to get to cents.', 'stripe-donation-form' ),
+			'label'             => __( 'Currency Scale', 'simple-donations-stripe' ),
+			'desc'              => __( 'Number to multiply the amount by to get the smallest currency unit. For example, if the currency were USD, this value would be 100 to get to cents.', 'simple-donations-stripe' ),
 			'default'           => self::$stripe_fields['currency_scale'],
 			'min'               => 1,
 			'type'              => 'number',
@@ -133,8 +133,8 @@ class Settings {
 		] );
 		$this->settings_api->add_field( self::SETTINGS_STRIPE, [
 			'name'              => 'statement_descriptor',
-			'label'             => __( 'Statement Description', 'stripe-donation-form' ),
-			'desc'              => __( 'Text to be displayed on your donator\'s credit card statement (max length of 22 characters)', 'stripe-donation-form' ),
+			'label'             => __( 'Statement Description', 'simple-donations-stripe' ),
+			'desc'              => __( 'Text to be displayed on your donator\'s credit card statement (max length of 22 characters)', 'simple-donations-stripe' ),
 			'default'           => self::$stripe_fields['statement_descriptor'],
 			'type'              => 'text',
 			'sanitize_callback' => 'sanitize_text_field',
@@ -143,100 +143,100 @@ class Settings {
 		// Define the Form Settings fields
 		$this->settings_api->add_field( self::SETTINGS_FORM, [
 			'name'              => 'show_preset_amounts',
-			'label'             => __( 'Preset Amounts Enabled', 'stripe-donation-form' ),
-			'desc'              => __( 'Show preset amounts', 'stripe-donation-form' ),
+			'label'             => __( 'Preset Amounts Enabled', 'simple-donations-stripe' ),
+			'desc'              => __( 'Show preset amounts', 'simple-donations-stripe' ),
 			'type'              => 'checkbox',
 			'default'           => self::$form_fields['show_preset_amounts'] ? 'on' : 'off',
 		] );
 		$this->settings_api->add_field( self::SETTINGS_FORM, [
 			'name'              => 'amounts_as_select',
-			'label'             => __( 'Preset Amounts Display', 'stripe-donation-form' ),
-			'desc'              => __( 'Display preset amounts as dropdown select', 'stripe-donation-form' ),
+			'label'             => __( 'Preset Amounts Display', 'simple-donations-stripe' ),
+			'desc'              => __( 'Display preset amounts as dropdown select', 'simple-donations-stripe' ),
 			'type'              => 'checkbox',
 		] );
 		$this->settings_api->add_field( self::SETTINGS_FORM, [
 			'name'              => 'preset_amounts',
-			'label'             => __( 'Preset Amount Values', 'stripe-donation-form' ),
-			'desc'              => __( 'Comma separated values, currency symbols omitted', 'stripe-donation-form' ),
+			'label'             => __( 'Preset Amount Values', 'simple-donations-stripe' ),
+			'desc'              => __( 'Comma separated values, currency symbols omitted', 'simple-donations-stripe' ),
 			'type'              => 'text',
 			'default'           => join( ',', self::$form_fields['preset_amounts'] ),
 			'sanitize_callback' => 'sanitize_text_field',
 		] );
 		$this->settings_api->add_field( self::SETTINGS_FORM, [
 			'name'              => 'default_amount',
-			'label'             => __( 'Default Donation Amount', 'stripe-donation-form' ),
-			'desc'              => __( 'Should match one of the above options', 'stripe-donation-form' ),
+			'label'             => __( 'Default Donation Amount', 'simple-donations-stripe' ),
+			'desc'              => __( 'Should match one of the above options', 'simple-donations-stripe' ),
 			'default'           => self::$form_fields['default_amount'],
 			'type'              => 'number',
 			'sanitize_callback' => 'doubleval',
 		] );
 		$this->settings_api->add_field( self::SETTINGS_FORM, [
 			'name'              => 'allow_custom_amount',
-			'label'             => __( 'Custom Donation Amount', 'stripe-donation-form' ),
-			'desc'              => __( 'Allow custom donation amount', 'stripe-donation-form' ),
+			'label'             => __( 'Custom Donation Amount', 'simple-donations-stripe' ),
+			'desc'              => __( 'Allow custom donation amount', 'simple-donations-stripe' ),
 			'type'              => 'checkbox',
 			'default'           => self::$form_fields['allow_custom_amount'] ? 'on' : 'off',
 		] );
 		$this->settings_api->add_field( self::SETTINGS_FORM, [
 			'name'              => 'allow_monthly_donation',
-			'label'             => __( 'Monthly Donations', 'stripe-donation-form' ),
-			'desc'              => __( 'Allow monthly donations', 'stripe-donation-form' ),
+			'label'             => __( 'Monthly Donations', 'simple-donations-stripe' ),
+			'desc'              => __( 'Allow monthly donations', 'simple-donations-stripe' ),
 			'type'              => 'checkbox',
 			'default'           => self::$form_fields['allow_monthly_donation'] ? 'on' : 'off',
 		] );
 		$this->settings_api->add_field( self::SETTINGS_FORM, [
 			'name'              => 'monthly_note_text',
-			'label'             => __( 'Note for monthly donations', 'stripe-donation-form' ),
+			'label'             => __( 'Note for monthly donations', 'simple-donations-stripe' ),
 			'type'              => 'textarea',
 			'default'           => self::$form_fields['monthly_note_text'],
 			'sanitize_callback' => 'sanitize_text_field',
 		] );
 		$this->settings_api->add_field( self::SETTINGS_FORM, [
 			'name'              => 'success_message',
-			'label'             => __( 'Success Message', 'stripe-donation-form' ),
-			'desc'              => __( 'Message to show users after they have successfully made a donation', 'stripe-donation-form' ),
+			'label'             => __( 'Success Message', 'simple-donations-stripe' ),
+			'desc'              => __( 'Message to show users after they have successfully made a donation', 'simple-donations-stripe' ),
 			'type'              => 'wysiwyg',
 			'default'           => self::$form_fields['success_message'],
 		] );
 		$this->settings_api->add_field( self::SETTINGS_FORM, [
 			'name'              => 'require_name',
-			'label'             => __( 'Require Name', 'stripe-donation-form' ),
-			'desc'              => __( 'Name required', 'stripe-donation-form' ),
+			'label'             => __( 'Require Name', 'simple-donations-stripe' ),
+			'desc'              => __( 'Name required', 'simple-donations-stripe' ),
 			'type'              => 'checkbox',
 			'default'           => self::$form_fields['require_name'] ? 'on' : 'off',
 		] );
 		$this->settings_api->add_field( self::SETTINGS_FORM, [
 			'name'              => 'require_email',
-			'label'             => __( 'Require Email', 'stripe-donation-form' ),
-			'desc'              => __( 'Email required', 'stripe-donation-form' ),
+			'label'             => __( 'Require Email', 'simple-donations-stripe' ),
+			'desc'              => __( 'Email required', 'simple-donations-stripe' ),
 			'type'              => 'checkbox',
 			'default'           => self::$form_fields['require_email'] ? 'on' : 'off',
 		] );
 		$this->settings_api->add_field( self::SETTINGS_FORM, [
 			'name'              => 'require_phone',
-			'label'             => __( 'Require Phone', 'stripe-donation-form' ),
-			'desc'              => __( 'Phone required', 'stripe-donation-form' ),
+			'label'             => __( 'Require Phone', 'simple-donations-stripe' ),
+			'desc'              => __( 'Phone required', 'simple-donations-stripe' ),
 			'type'              => 'checkbox',
 			'default'           => self::$form_fields['require_phone'] ? 'on' : 'off',
 		] );
 		$this->settings_api->add_field( self::SETTINGS_FORM, [
 			'name'              => 'ask_for_name',
-			'label'             => __( 'Show Name Field', 'stripe-donation-form' ),
-			'desc'              => __( 'Name field included', 'stripe-donation-form' ),
+			'label'             => __( 'Show Name Field', 'simple-donations-stripe' ),
+			'desc'              => __( 'Name field included', 'simple-donations-stripe' ),
 			'type'              => 'checkbox',
 			'default'           => self::$form_fields['ask_for_name'] ? 'on' : 'off',
 		] );
 		$this->settings_api->add_field( self::SETTINGS_FORM, [
 			'name'              => 'ask_for_email',
-			'label'             => __( 'Show Email Field', 'stripe-donation-form' ),
-			'desc'              => __( 'Email field included', 'stripe-donation-form' ),
+			'label'             => __( 'Show Email Field', 'simple-donations-stripe' ),
+			'desc'              => __( 'Email field included', 'simple-donations-stripe' ),
 			'type'              => 'checkbox',
 			'default'           => self::$form_fields['ask_for_email'] ? 'on' : 'off',
 		] );
 		$this->settings_api->add_field( self::SETTINGS_FORM, [
 			'name'              => 'ask_for_phone',
-			'label'             => __( 'Show Phone Field', 'stripe-donation-form' ),
-			'desc'              => __( 'Phone field included', 'stripe-donation-form' ),
+			'label'             => __( 'Show Phone Field', 'simple-donations-stripe' ),
+			'desc'              => __( 'Phone field included', 'simple-donations-stripe' ),
 			'type'              => 'checkbox',
 			'default'           => self::$form_fields['ask_for_phone'] ? 'on' : 'off',
 		] );
@@ -247,8 +247,8 @@ class Settings {
 
 	public function add_page_menu_item() {
 		add_options_page(
-			__( 'Donation Form', 'stripe-donation-form' ),
-			__( 'Donation Form', 'stripe-donation-form' ),
+			__( 'Donation Form', 'simple-donations-stripe' ),
+			__( 'Donation Form', 'simple-donations-stripe' ),
 			'delete_pages', // One of the admin capabilities
 			self::PAGE_MENU_SLUG,
 			array($this, 'print_settings_page')

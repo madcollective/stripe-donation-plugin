@@ -1,4 +1,4 @@
-=== Stripe Donation Form ===
+=== Simple Donations With Stripe ===
 Tags: donation form, stripe
 Requires at least: 3.0.1
 Tested up to: 4.7.2
@@ -13,10 +13,10 @@ A simple donation form powered by Stripe that allows users to make one-time and 
 
 == Installation ==
 
-1. Upload the `stripe-donation-form` directory to the `/wp-content/plugins/` directory
+1. Upload the `simple-donations-stripe` directory to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Go to `Settings > Stripe Donation Form` and input your Stripe Keys
-1. Place `<?php StripeDonationForm::form(); ?>` in your templates
+1. Go to `Settings > Donation Form` and input your Stripe Keys
+1. Place `<?php SimpleDonationsStripe::form(); ?>` in your templates
 
 == Frequently Asked Questions ==
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace StripeDonationForm\Tools;
+namespace SimpleDonationsStripe\Tools;
 
 /**
  * Register all actions and filters for the plugin.

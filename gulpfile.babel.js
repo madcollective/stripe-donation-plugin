@@ -8,7 +8,7 @@ import {taskZip} from './tasks/zip';
 
 const argv = minimist(process.argv.slice(2));
 
-const pluginName = 'stripe-donation-form';
+const pluginName = 'simple-donations-stripe';
 
 const config = {
 	// Flags

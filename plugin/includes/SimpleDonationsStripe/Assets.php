@@ -1,6 +1,6 @@
 <?php
 
-namespace StripeDonationForm;
+namespace SimpleDonationsStripe;
 
 /**
  * Functions for loading static assets

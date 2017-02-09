@@ -1,6 +1,6 @@
 <?php
 
-namespace StripeDonationForm\Tools;
+namespace SimpleDonationsStripe\Tools;
 
 /**
  * Detects and manages Locales

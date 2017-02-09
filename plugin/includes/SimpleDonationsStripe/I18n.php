@@ -1,6 +1,6 @@
 <?php
 
-namespace StripeDonationForm;
+namespace SimpleDonationsStripe;
 
 /**
  * Define the internationalization functionality.
