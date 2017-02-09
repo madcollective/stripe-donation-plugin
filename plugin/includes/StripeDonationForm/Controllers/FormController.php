@@ -31,9 +31,9 @@ class FormController {
 		$stripe_token = sanitize_text_field( $_POST['stripe_token'] );
 
 		$amount  = sanitize_text_field( $_POST['amount'] );
-		$name    = sanitize_text_field( $_POST['name'] );
-		$email   = sanitize_text_field( $_POST['email'] );
-		$phone   = sanitize_text_field( $_POST['phone'] );
+		$name    = isset( $_POST['name']    ) ? sanitize_text_field( $_POST['name']    ) : null;
+		$email   = isset( $_POST['email']   ) ? sanitize_text_field( $_POST['email']   ) : null;
+		$phone   = isset( $_POST['phone']   ) ? sanitize_text_field( $_POST['phone']   ) : null;
 		$monthly = isset( $_POST['monthly'] ) ? sanitize_text_field( $_POST['monthly'] ) : null;
 
 		// Transform and determine useful things from input
@@ -104,14 +104,14 @@ class FormController {
 			];
 		}
 
-		if ( ! filter_var( $input['email'], FILTER_VALIDATE_EMAIL ) ) {
+		if ( $input['email'] !== null && ! filter_var( $input['email'], FILTER_VALIDATE_EMAIL ) ) {
 			$errors[] = [
 				'field' => 'email',
 				'error' => __( 'Invalid email provided.', 'stripe-donation-form' ),
 			];
 		}
 
-		if ( ! preg_match( self::PHONE_NUMBER_REGEX, $input['phone'] ) ) {
+		if ( $input['phone'] !== null && ! preg_match( self::PHONE_NUMBER_REGEX, $input['phone'] ) ) {
 			$errors[] = [
 				'field' => 'phone',
 				'error' => __( 'Invalid phone number provided.', 'stripe-donation-form' ),

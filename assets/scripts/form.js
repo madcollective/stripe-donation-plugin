@@ -96,15 +96,19 @@ function initSubmission() {
 		if (event.target.status === 200) {
 			const response = JSON.parse(event.target.response);
 			if (response.success)
-				form.parentNode.innerHTML = response.success_message;
+				showSuccess(response.success_message);
 			else
 				response.errors.forEach(showError);
 		}
 		else {
 			errorsElement.innerHTML = event.target.statusText;
 		}
+	}
 
-		console.log(event.target);
+	function showSuccess(successMessage) {
+		const wrapper = form.parentNode;
+		wrapper.innerHTML = successMessage;
+		wrapper.scrollIntoView();
 	}
 
 	function onError(event) {
