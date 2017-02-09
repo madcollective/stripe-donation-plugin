@@ -1,9 +1,9 @@
 import gulp from 'gulp';
-import zip from 'gulp-zip';
+import archiver from 'gulp-archiver';
 
 const taskZip = (sourceGlob, pluginName, destination) => () => {
 	return gulp.src(sourceGlob)
-		.pipe(zip(`${pluginName}.zip`))
+		.pipe(archiver(`${pluginName}.zip`))
 		.pipe(gulp.dest(destination));
 };
 

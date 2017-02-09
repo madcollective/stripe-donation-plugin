@@ -36,7 +36,7 @@ const config = {
 
 	// Zip
 	zipGlob: [
-		'plugin/*',
+		'plugin/**/*',
 		'!.DS_Store',
 		'!Thumbs.db',
 	],
