@@ -117,9 +117,12 @@ function initSubmission() {
 	function clearErrors() {
 		errorsElement.innerHTML = '';
 
-		[].forEach.call(form.querySelector('.sdf-field-error'), (el) => {
-			el.parentNode.removeChild(el);
-		});
+		const fieldErrors = form.querySelector('.sdf-field-error');
+		if (fieldErrors) {
+			[].forEach.call(fieldErrors, (el) => {
+				el.parentNode.removeChild(el);
+			});
+		}
 	}
 
 	function showError(error) {
