@@ -107,8 +107,14 @@ function initSubmission() {
 
 	function showSuccess(successMessage) {
 		const wrapper = form.parentNode;
-		wrapper.innerHTML = successMessage;
-		wrapper.scrollIntoView();
+		const success = document.createElement('div');
+		success.className = 'sdf-success-message';
+		success.innerHTML = successMessage;
+		wrapper.innerHTML = '';
+		wrapper.appendChild(success);
+
+		var rect = success.getBoundingClientRect();
+		window.scrollTo(0, Math.max(rect.top + document.body.scrollTop - 20, 0));
 	}
 
 	function onError(event) {
@@ -171,7 +177,6 @@ function initAmounts() {
 		// Define the function to set the current preset amount
 		setPresetAmount = function(amount) {
 			[].forEach.call(radioList.querySelectorAll('input'), (el) => {
-				console.log(el.value === amount ? 'hi' : 'no')
 				el.checked = (el.value === amount);
 			});
 		};
