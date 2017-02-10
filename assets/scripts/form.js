@@ -1,8 +1,5 @@
-import RunIf       from './run-if';
-import removeClass from 'remove-class';
-import addClass    from 'add-class';
-import hasClass    from 'has-class';
-import delegate    from 'delegate';
+import RunIf    from './run-if';
+import delegate from 'delegate';
 
 /**
  * From http://stackoverflow.com/a/26556347/4085004
@@ -213,31 +210,29 @@ function initAmounts() {
 function initCardNumber() {
 	const numberInput = document.querySelector('input[data-stripe="number"]');
 
-	const cardTypeMap = {
-		'card-type-visa':        new RegExp(/^4[0-9]{12}(?:[0-9]{3})?$/),
-		'card-type-mastercard':  new RegExp(/^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/),
-		'card-type-amex':        new RegExp(/^3[47][0-9]{13}$/),
-		'card-type-diners-club': new RegExp(/^3(?:0[0-5]|[68][0-9])[0-9]{11}$/),
-		'card-type-discover':    new RegExp(/^6(?:011|5[0-9]{2})[0-9]{12}$/),
-		'card-type-jcb':         new RegExp(/^(?:2131|1800|35\d{3})\d{11}$/),
-	};
+	const cardTypes = [
+		[ 'visa',        new RegExp(/^4[0-9]{12}(?:[0-9]{3})?$/) ],
+		[ 'mastercard',  new RegExp(/^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$/) ],
+		[ 'amex',        new RegExp(/^3[47][0-9]{13}$/) ],
+		[ 'diners-club', new RegExp(/^3(?:0[0-5]|[68][0-9])[0-9]{11}$/) ],
+		[ 'discover',    new RegExp(/^6(?:011|5[0-9]{2})[0-9]{12}$/) ],
+		[ 'jcb',         new RegExp(/^(?:2131|1800|35\d{3})\d{11}$/) ],
+	];
 
 	function numberChanged(event) {
 		const number = numberInput.value;
+		const cardType = cardTypes.filter(function(typeInfo) {
+			return typeInfo[1].test(number);
+		});
 
-		// Determine what type of card it is and apply the corresponding class to the element
-		for (let key in cardTypeMap) {
-			if (cardTypeMap[key].test(number))
-				addClass(numberInput, key);
-			else
-				removeClass(numberInput, key);
-		}
-
-		event.preventDefault();
+		if (cardType.length)
+			numberInput.setAttribute('data-card-type', cardType[0][0]);
+		else
+			numberInput.removeAttribute('data-card-type');
 	}
 
 	numberInput.addEventListener('change',   numberChanged);
-	numberInput.addEventListener('keypress', numberChanged);
+	numberInput.addEventListener('keydown', numberChanged);
 }
 
 export function onLoad() {
