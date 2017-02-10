@@ -38,7 +38,7 @@ function initSubmission() {
 	form.addEventListener('submit', (event) => {
 		// Disable the submit button to prevent repeated clicks
 		submit.setAttribute('disabled', 'disabled');
-		clearErrors();
+		clearErrors(form);
 
 		// Request a token from Stripe
 		Stripe.card.createToken(form, stripeResponseHandler);
@@ -70,11 +70,11 @@ function initSubmission() {
 			input.value = token;
 
 			// Submit the form
-			ajaxSubmit();
+			ajaxSubmit(form);
 		}
 	}
 
-	function ajaxSubmit() {
+	function ajaxSubmit(form) {
 		const url = form.action;
 		const xhr = new XMLHttpRequest();
 		const params = paramsFromForm(form);
@@ -121,7 +121,7 @@ function initSubmission() {
 		console.error(event);
 	}
 
-	function clearErrors() {
+	function clearErrors(form) {
 		errorsElement.innerHTML = '';
 
 		const fieldErrors = form.querySelector('.sds-field-error');
@@ -148,6 +148,9 @@ function initSubmission() {
 	}
 }
 
+/**
+ * Initializes the amount selection/customization behavior
+ */
 function initAmounts() {
 	const radioList   = document.querySelector('.sds-radio-button-list');
 	const amountInput = document.querySelector('input[name="amount"]');
@@ -207,6 +210,10 @@ function initAmounts() {
 	});
 }
 
+/**
+ * Applies data attributes to the card number input depending on what kind of
+ *   card it is detected to be.
+ */
 function initCardNumber() {
 	const numberInput = document.querySelector('input[data-stripe="number"]');
 
@@ -235,6 +242,9 @@ function initCardNumber() {
 	numberInput.addEventListener('keydown', numberChanged);
 }
 
+/**
+ * Loads everything if the form exists on the page
+ */
 export function onLoad() {
 	RunIf.selector('#stripe-donation-form', () => {
 		initSubmission();

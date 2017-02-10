@@ -15,6 +15,8 @@ use SimpleDonationsStripe\Tools;
  */
 class Plugin {
 
+	const ACTION_DONATION_SUCCESS = 'sds_donation_success';
+
 	/**
 	 * The unique identifier of this plugin.
 	 *
@@ -109,6 +111,14 @@ class Plugin {
 	 */
 	public function run() {
 		$this->loader->run();
+	}
+
+	/**
+	 * Does the action for successful donations so developers can gain access to
+	 *   that information for integrations or whatever they want.
+	 */
+	public static function do_donation_success_action( $customer_info ) {
+		do_action(self::ACTION_DONATION_SUCCESS, $customer_info );
 	}
 
 	/**

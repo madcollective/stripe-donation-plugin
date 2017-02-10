@@ -41,17 +41,17 @@ class FormView {
 						<?php echo self::render_amount_fields( $options ) ?>
 					</fieldset>
 
-					<fieldset class="sds-payment-info-fieldset">
-						<legend><?php _e( 'Payment Information', 'simple-donations-stripe' ); ?></legend>
-						<?php echo self::render_payment_info_fields( $options ) ?>
-					</fieldset>
-
 					<?php if ( $options['ask_for_name'] || $options['ask_for_email'] || $options['ask_for_phone'] ) : ?>
 						<fieldset class="sds-personal-info-fieldset">
 							<legend><?php _e( 'Personal Information', 'simple-donations-stripe' ); ?></legend>
 							<?php echo self::render_personal_info_fields( $options ) ?>
 						</fieldset>
 					<?php endif; ?>
+
+					<fieldset class="sds-payment-info-fieldset">
+						<legend><?php _e( 'Payment Information', 'simple-donations-stripe' ); ?></legend>
+						<?php echo self::render_payment_info_fields( $options ) ?>
+					</fieldset>
 
 					<button type="submit" class="submit"><?php _e( 'Submit Payment', 'simple-donations-stripe' ); ?></button>
 				</form>

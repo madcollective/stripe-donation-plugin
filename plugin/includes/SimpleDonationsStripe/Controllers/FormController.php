@@ -2,6 +2,7 @@
 
 namespace SimpleDonationsStripe\Controllers;
 
+use SimpleDonationsStripe\Plugin;
 use SimpleDonationsStripe\Settings;
 use SimpleDonationsStripe\Tools\Locales;
 
@@ -40,8 +41,11 @@ class FormController {
 		$amount = doubleval( $amount ) * self::get_currency_scale();
 		$is_monthly = ( $monthly === 'on' );
 
+		// Bundle them all up for certain function calls
+		$info = compact( 'amount', 'is_monthly', 'name', 'email', 'phone' );
+
 		// Validate input
-		$validation = self::validate_post_donate( compact( 'amount', 'is_monthly', 'name', 'email', 'phone' ) );
+		$validation = self::validate_post_donate( $info );
 
 		// Process donation if valid or return errors if not
 		if ( $validation === true ) {
@@ -56,6 +60,9 @@ class FormController {
 				self::donate_monthly( $customer, $amount );
 			else
 				self::donate_single( $customer, $amount );
+
+			// Notify listeners and send customer data
+			Plugin::do_donation_success_action( $info );
 
 			// Build our response
 			$response = [
