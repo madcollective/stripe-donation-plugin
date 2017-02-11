@@ -41,17 +41,21 @@ class Settings {
 		'show_preset_amounts' => true,
 		'allow_custom_amount' => true,
 		'allow_monthly_donation' => true,
-		'ask_for_email' => true,
-		'ask_for_name' => true,
-		'ask_for_phone' => false,
-		'require_name' => true,
-		'require_email' => true,
-		'require_phone' => false,
 		'custom_amount_label' => null,
 		'monthly_note_text' => DEFAULT_MONTHLY_NOTE,
 		'success_message' => DEFAULT_SUCCESS_MESSAGE,
+		'fields_displayed' => [ 'name' => 'name', 'email' => 'email', 'phone' => 'phone' ],
+		'fields_required' => [ 'name' => 'name', 'email' => 'email' ],
 	];
 
+	private static $field_options = [
+		'name' => 'Name',
+		'name_first' => 'First Name',
+		'name_last' => 'Last Name',
+		'email' => 'Email Address',
+		'phone' => 'Phone Number',
+		'mailing_address' => 'Mailing Address Fields',
+	];
 
 	/**
 	 * @var WeDevs_Settings_API    $settings_api    Tool for creating settings pages more easily
@@ -199,46 +203,18 @@ class Settings {
 			'default'           => self::$form_fields['success_message'],
 		] );
 		$this->settings_api->add_field( self::SETTINGS_FORM, [
-			'name'              => 'require_name',
-			'label'             => __( 'Require Name', 'simple-donations-stripe' ),
-			'desc'              => __( 'Name required', 'simple-donations-stripe' ),
-			'type'              => 'checkbox',
-			'default'           => self::$form_fields['require_name'] ? 'on' : 'off',
+			'name'              => 'fields_displayed',
+			'label'             => __( 'Included Fields', 'simple-donations-stripe' ),
+			'type'              => 'multicheck',
+			'options'           => self::$field_options,
+			'default'           => self::$form_fields['fields_displayed'],
 		] );
 		$this->settings_api->add_field( self::SETTINGS_FORM, [
-			'name'              => 'require_email',
-			'label'             => __( 'Require Email', 'simple-donations-stripe' ),
-			'desc'              => __( 'Email required', 'simple-donations-stripe' ),
-			'type'              => 'checkbox',
-			'default'           => self::$form_fields['require_email'] ? 'on' : 'off',
-		] );
-		$this->settings_api->add_field( self::SETTINGS_FORM, [
-			'name'              => 'require_phone',
-			'label'             => __( 'Require Phone', 'simple-donations-stripe' ),
-			'desc'              => __( 'Phone required', 'simple-donations-stripe' ),
-			'type'              => 'checkbox',
-			'default'           => self::$form_fields['require_phone'] ? 'on' : 'off',
-		] );
-		$this->settings_api->add_field( self::SETTINGS_FORM, [
-			'name'              => 'ask_for_name',
-			'label'             => __( 'Show Name Field', 'simple-donations-stripe' ),
-			'desc'              => __( 'Name field included', 'simple-donations-stripe' ),
-			'type'              => 'checkbox',
-			'default'           => self::$form_fields['ask_for_name'] ? 'on' : 'off',
-		] );
-		$this->settings_api->add_field( self::SETTINGS_FORM, [
-			'name'              => 'ask_for_email',
-			'label'             => __( 'Show Email Field', 'simple-donations-stripe' ),
-			'desc'              => __( 'Email field included', 'simple-donations-stripe' ),
-			'type'              => 'checkbox',
-			'default'           => self::$form_fields['ask_for_email'] ? 'on' : 'off',
-		] );
-		$this->settings_api->add_field( self::SETTINGS_FORM, [
-			'name'              => 'ask_for_phone',
-			'label'             => __( 'Show Phone Field', 'simple-donations-stripe' ),
-			'desc'              => __( 'Phone field included', 'simple-donations-stripe' ),
-			'type'              => 'checkbox',
-			'default'           => self::$form_fields['ask_for_phone'] ? 'on' : 'off',
+			'name'              => 'fields_required',
+			'label'             => __( 'Required Fields', 'simple-donations-stripe' ),
+			'type'              => 'multicheck',
+			'options'           => self::$field_options,
+			'default'           => self::$form_fields['fields_required'],
 		] );
 
 		// Initialize them
@@ -281,14 +257,26 @@ class Settings {
 		$settings_api = new \WeDevs_Settings_API();
 		$value = $settings_api->get_option( $field, $section, ( $default === null ) ? $setting_default : $default );
 
-		if ( $value === $setting_default )
+		if ( 'fields_displayed' === $field || 'fields_required' === $field )
+			return self::parse_field_options( $value );
+		else if ( $value === $setting_default )
 			return $value;
 		else if ( is_bool( $setting_default ) )
-			return ( $value === 'on' );
-		else if ( is_array( $setting_default ) )
+			return ( 'on' === $value );
+		else if ( 'preset_amounts' === $field )
 			return array_map( 'doubleval', explode( ',', $value ) );
 		else
 			return $value;
+	}
+
+	private static function parse_field_options( $options ) {
+		return array_combine(
+			array_keys( self::$field_options ),
+			array_map(
+				function( $field ) use ( $options ) { return isset( $options[$field] ); },
+				array_keys( self::$field_options )
+			)
+		);
 	}
 
 	public static function get_stripe_secret_key() {

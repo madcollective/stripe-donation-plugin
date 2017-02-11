@@ -86,21 +86,7 @@ class FormController {
 	 *   of errors if there are validation issues.
 	 */
 	private static function validate_post_donate( $input ) {
-		$errors = array_reduce(
-			self::get_required_fields(),
-			function( $errors, $key ) use ( $input ) {
-				if ( ! $input[$key] ) {
-					return array_merge( $errors, [
-						[
-							'field' => $key,
-							'error' => str_replace( '%s', $key, __( 'The %s field is required.', 'simple-donations-stripe' ) ),
-						]
-					] );
-				}
-				return $errors;
-			},
-			[]
-		);
+		$errors = [];
 
 		if ( $input['amount'] < self::MIN_DONATION_AMOUNT ) {
 			$locale = Settings::get( 'locale' );
@@ -124,6 +110,26 @@ class FormController {
 				'error' => __( 'Invalid phone number provided.', 'simple-donations-stripe' ),
 			];
 		}
+
+		// Add requirement errors
+		$errors = array_merge(
+			$errors,
+			array_reduce(
+				self::get_required_fields(),
+				function( $errors, $key ) use ( $input ) {
+					if ( ! $input[$key] ) {
+						return array_merge( $errors, [
+							[
+								'field' => $key,
+								'error' => str_replace( '%s', $key, __( 'The %s field is required.', 'simple-donations-stripe' ) ),
+							]
+						] );
+					}
+					return $errors;
+				},
+				[]
+			)
+		);
 
 		if ( $errors )
 			return $errors;
@@ -204,11 +210,8 @@ class FormController {
 	}
 
 	private static function get_required_fields() {
-		$required_fields = [ 'amount' ];
-
-		if ( Settings::get( 'require_email' ) ) array_push( $required_fields, 'email' );
-		if ( Settings::get( 'require_name'  ) ) array_push( $required_fields, 'name'  );
-		if ( Settings::get( 'require_phone' ) ) array_push( $required_fields, 'phone' );
+		$required_fields = array_keys( array_filter( Settings::get( 'fields_required' ) ) );
+		$required_fields[] = 'amount';
 
 		return $required_fields;
 	}

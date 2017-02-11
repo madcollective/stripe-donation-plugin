@@ -24,9 +24,17 @@ class FormView {
 
 		// If we're allowing a monthly donation, we should ask for
 		if ( $options['allow_monthly_donation'] ) {
-			$options['ask_for_email'] = true;
-			$options['ask_for_name'] = true;
+			$options['fields_displayed']['email'] = true;
+			$options['fields_displayed']['name'] = true;
 		}
+
+		$display_personal_info_section = (
+			$options['fields_displayed']['name'] ||
+			$options['fields_displayed']['name_first'] ||
+			$options['fields_displayed']['name_last'] ||
+			$options['fields_displayed']['email'] ||
+			$options['fields_displayed']['phone']
+		);
 
 		$action = admin_url( 'admin-ajax.php' ) . '?action=' . FormController::FORM_ACTION;
 
@@ -41,7 +49,7 @@ class FormView {
 						<?php echo self::render_amount_fields( $options ) ?>
 					</fieldset>
 
-					<?php if ( $options['ask_for_name'] || $options['ask_for_email'] || $options['ask_for_phone'] ) : ?>
+					<?php if ( $display_personal_info_section ) : ?>
 						<fieldset class="sds-personal-info-fieldset">
 							<legend><?php _e( 'Personal Information', 'simple-donations-stripe' ); ?></legend>
 							<?php echo self::render_personal_info_fields( $options ) ?>
@@ -52,6 +60,13 @@ class FormView {
 						<legend><?php _e( 'Payment Information', 'simple-donations-stripe' ); ?></legend>
 						<?php echo self::render_payment_info_fields( $options ) ?>
 					</fieldset>
+
+					<?php if ( $options['fields_displayed']['mailing_address'] ) : ?>
+						<fieldset class="sds-mailing-address-fieldset">
+							<legend><?php _e( 'Mailing Address', 'simple-donations-stripe' ); ?></legend>
+							<?php echo self::render_mailing_address_fields( $options ) ?>
+						</fieldset>
+					<?php endif; ?>
 
 					<button type="submit" class="submit"><?php _e( 'Submit Payment', 'simple-donations-stripe' ); ?></button>
 				</form>
@@ -152,27 +167,27 @@ class FormView {
 	private static function render_personal_info_fields( $options ) {
 		ob_start();
 		?>
-			<?php if ( $options['ask_for_name'] ) : ?>
+			<?php if ( $options['fields_displayed']['name'] ) : ?>
 				<div class="form-row sds-name">
 					<label>
 						<span><?php _e( 'Name', 'simple-donations-stripe' ); ?></span>
-						<input type="text" name="name" <?php if ( $options['require_name'] ) echo 'required'; ?>>
+						<input type="text" name="name">
 					</label>
 				</div>
 			<?php endif; ?>
-			<?php if ( $options['ask_for_email'] ) : ?>
+			<?php if ( $options['fields_displayed']['email'] ) : ?>
 				<div class="form-row sds-email">
 					<label>
 						<span><?php _e( 'Email Address', 'simple-donations-stripe' ); ?></span>
-						<input type="email" name="email" <?php if ( $options['require_email'] ) echo 'required'; ?>>
+						<input type="email" name="email">
 					</label>
 				</div>
 			<?php endif; ?>
-			<?php if ( $options['ask_for_phone'] ) : ?>
+			<?php if ( $options['fields_displayed']['phone'] ) : ?>
 				<div class="form-row sds-phone">
 					<label>
 						<span><?php _e( 'Phone Number', 'simple-donations-stripe' ); ?></span>
-						<input type="tel" name="phone" <?php if ( $options['require_phone'] ) echo 'required'; ?> pattern="^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$">
+						<input type="tel" name="phone"  pattern="^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$">
 					</label>
 				</div>
 			<?php endif; ?>
@@ -217,6 +232,19 @@ class FormView {
 					<input type="text" size="6" data-stripe="address_zip" required>
 				</label>
 			</div>
+		<?php
+		return ob_get_clean();
+	}
+
+	/**
+	 * Renders the personal info fields
+	 *
+	 * @return string Partial form HTML
+	 */
+	private static function render_mailing_address_fields( $options ) {
+		ob_start();
+		?>
+
 		<?php
 		return ob_get_clean();
 	}

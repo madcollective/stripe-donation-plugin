@@ -124,7 +124,7 @@ function initSubmission() {
 	function clearErrors(form) {
 		errorsElement.innerHTML = '';
 
-		const fieldErrors = form.querySelector('.sds-field-error');
+		const fieldErrors = form.querySelectorAll('.sds-field-error');
 		if (fieldErrors) {
 			[].forEach.call(fieldErrors, (el) => {
 				el.parentNode.removeChild(el);
