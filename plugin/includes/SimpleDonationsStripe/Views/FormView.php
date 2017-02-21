@@ -151,15 +151,16 @@ class FormView {
 			<?php endif; ?>
 			<?php if ( $options['allow_monthly_donation'] ) : ?>
 				<div class="form-row sds-monthly">
-					<label>
-						<input type="checkbox" name="monthly">
-						<span>
-							<?php _e( 'Make this my monthly donation.', 'simple-donations-stripe' ); ?>
-							<?php if ( $options['monthly_note_text'] ) : ?>
-								<small><?php echo $options['monthly_note_text']; ?></small>
-							<?php endif; ?>
-						</span>
-					</label>
+					<ul class="sds-radio-button-list">
+						<li>
+							<input type="radio" name="monthly" value="no" id="monthly_no" checked>
+							<label for="monthly_no">One Time</label>
+						</li>
+						<li>
+							<input type="radio" name="monthly" value="yes" id="monthly_yes">
+							<label for="monthly_yes">Monthly</label>
+						</li>
+					</ul>
 				</div>
 			<?php endif; ?>
 		<?php

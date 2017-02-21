@@ -44,7 +44,6 @@ class Settings {
 		'allow_custom_amount' => true,
 		'allow_monthly_donation' => true,
 		'custom_amount_label' => null,
-		'monthly_note_text' => DEFAULT_MONTHLY_NOTE,
 		'success_message' => DEFAULT_SUCCESS_MESSAGE,
 		'fields_displayed' => [ 'name' => 'name', 'email' => 'email', 'phone' => 'phone' ],
 		'fields_required' => [ 'name' => 'name', 'email' => 'email' ],
@@ -207,13 +206,6 @@ class Settings {
 			'desc'              => __( 'Allow monthly donations', 'simple-donations-stripe' ),
 			'type'              => 'checkbox',
 			'default'           => self::$form_fields['allow_monthly_donation'] ? 'on' : 'off',
-		] );
-		$this->settings_api->add_field( self::SETTINGS_FORM, [
-			'name'              => 'monthly_note_text',
-			'label'             => __( 'Note for monthly donations', 'simple-donations-stripe' ),
-			'type'              => 'textarea',
-			'default'           => self::$form_fields['monthly_note_text'],
-			'sanitize_callback' => 'sanitize_text_field',
 		] );
 		$this->settings_api->add_field( self::SETTINGS_FORM, [
 			'name'              => 'success_message',

@@ -39,7 +39,7 @@ class FormController {
 
 		// Transform and determine useful things from input
 		$amount = doubleval( $amount ) * self::get_currency_scale();
-		$is_monthly = ( $monthly === 'on' );
+		$is_monthly = ( $monthly === 'yes' );
 
 		// Bundle them all up for certain function calls
 		$info = compact( 'amount', 'is_monthly', 'name', 'email', 'phone' );
