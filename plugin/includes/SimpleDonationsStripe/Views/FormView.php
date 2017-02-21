@@ -290,7 +290,7 @@ class FormView {
 				<div class="form-row sds-address-zip">
 					<label>
 						<span><?php _e( 'ZIP', 'simple-donations-stripe' ); ?></span>
-						<input type="text" name="address_zip" size="6" <?php echo $required; ?>>
+						<input type="text" name="address_zip" pattern="^\d{5}(?:[-\s]\d{4})?$" <?php echo $required; ?>>
 					</label>
 				</div>
 			<?php endif; ?>
