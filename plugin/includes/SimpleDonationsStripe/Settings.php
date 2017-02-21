@@ -2,6 +2,8 @@
 
 namespace SimpleDonationsStripe;
 
+use SimpleDonationsStripe\Plugin;
+use SimpleDonationsStripe\Tools\CountryData;
 use SimpleDonationsStripe\Tools\Locales;
 
 define('DEFAULT_LOCALE', setlocale( LC_MONETARY, '0' ));
@@ -46,15 +48,33 @@ class Settings {
 		'success_message' => DEFAULT_SUCCESS_MESSAGE,
 		'fields_displayed' => [ 'name' => 'name', 'email' => 'email', 'phone' => 'phone' ],
 		'fields_required' => [ 'name' => 'name', 'email' => 'email' ],
+		'address_fields' => [
+			'address_1' => 'address_1',
+			'address_2' => 'address_2',
+			'address_zip' => 'address_zip',
+			'address_city' => 'address_city',
+			'address_state' => 'address_state',
+		],
 	];
 
 	private static $field_options = [
-		'name' => 'Name',
-		'name_first' => 'First Name',
-		'name_last' => 'Last Name',
-		'email' => 'Email Address',
-		'phone' => 'Phone Number',
+		'name'            => 'Name',
+		'name_first'      => 'First Name',
+		'name_last'       => 'Last Name',
+		'email'           => 'Email Address',
+		'phone'           => 'Phone Number',
 		'mailing_address' => 'Mailing Address Fields',
+	];
+
+	private static $address_field_options = [
+		'address_1'        => 'Address',
+		'address_2'        => 'Address Line 2',
+		'address_zip'      => 'ZIP',
+		'address_postal'   => 'Postal',
+		'address_city'     => 'City',
+		'address_state'    => 'State',
+		'address_province' => 'Province',
+		'address_country'  => 'Country',
 	];
 
 	/**
@@ -216,6 +236,13 @@ class Settings {
 			'options'           => self::$field_options,
 			'default'           => self::$form_fields['fields_required'],
 		] );
+		$this->settings_api->add_field( self::SETTINGS_FORM, [
+			'name'              => 'address_fields',
+			'label'             => __( 'Address Fields', 'simple-donations-stripe' ),
+			'type'              => 'multicheck',
+			'options'           => self::$address_field_options,
+			'default'           => self::$form_fields['address_fields'],
+		] );
 
 		// Initialize them
 		$this->settings_api->admin_init();
@@ -258,7 +285,9 @@ class Settings {
 		$value = $settings_api->get_option( $field, $section, ( $default === null ) ? $setting_default : $default );
 
 		if ( 'fields_displayed' === $field || 'fields_required' === $field )
-			return self::parse_field_options( $value );
+			return self::parse_field_options( self::$field_options, $value );
+		else if ( 'address_fields' === $field )
+			return self::parse_field_options( self::$address_field_options, $value );
 		else if ( $value === $setting_default )
 			return $value;
 		else if ( is_bool( $setting_default ) )
@@ -269,12 +298,12 @@ class Settings {
 			return $value;
 	}
 
-	private static function parse_field_options( $options ) {
+	private static function parse_field_options( $options, $values ) {
 		return array_combine(
-			array_keys( self::$field_options ),
+			array_keys( $options ),
 			array_map(
-				function( $field ) use ( $options ) { return isset( $options[$field] ); },
-				array_keys( self::$field_options )
+				function( $field ) use ( $values ) { return isset( $values[$field] ); },
+				array_keys( $options )
 			)
 		);
 	}
@@ -313,6 +342,15 @@ class Settings {
 			),
 			[ 'publishable_key' => self::get_stripe_public_key() ]
 		);
+	}
+
+	/**
+	 * Does the action for successful donations so developers can gain access to
+	 *   that information for integrations or whatever they want.
+	 */
+	public static function get_states_or_provinces() {
+		$default_list = CountryData::$us_states;
+		return apply_filters(Plugin::FILTER_STATES_PROVINCES, $default_list );
 	}
 
 }

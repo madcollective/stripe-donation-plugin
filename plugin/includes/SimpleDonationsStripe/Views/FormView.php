@@ -5,6 +5,7 @@ namespace SimpleDonationsStripe\Views;
 use SimpleDonationsStripe\Settings;
 use SimpleDonationsStripe\Controllers\FormController;
 use SimpleDonationsStripe\Tools\Locales;
+use SimpleDonationsStripe\Tools\CountryData;
 
 /**
  * Renders the form
@@ -69,6 +70,8 @@ class FormView {
 					<?php endif; ?>
 
 					<button type="submit" class="submit"><?php _e( 'Submit Payment', 'simple-donations-stripe' ); ?></button>
+
+					<a href="https://stripe.com/" class="sds-powered-by-stripe">Powered by Stripe</a>
 				</form>
 
 				<script type="text/javascript">
@@ -255,9 +258,88 @@ class FormView {
 	 * @return string Partial form HTML
 	 */
 	private static function render_mailing_address_fields( $options ) {
+		$required = $options['fields_required']['mailing_address'] ? 'required' : '';
+		$fields = $options['address_fields'];
+		$states = Settings::get_states_or_provinces();
+		$states_options = array_reduce( array_keys( $states ), function( $html, $key ) use ( $states ) {
+			return $html . '<option value="' . $key . '">' . $states[$key] . '</options>' . "\n";
+		} );
+		$country_options = array_reduce( CountryData::$countries, function( $html, $country ) {
+			return $html . '<option value="' . $country . '">' . $country . '</options>' . "\n";
+		} );
+
 		ob_start();
 		?>
-
+			<?php if ( $fields['address_1'] ) : ?>
+				<div class="form-row sds-address-1">
+					<label>
+						<span><?php _e( 'Address', 'simple-donations-stripe' ); ?></span>
+						<input type="text" name="address_1" <?php echo $required; ?>>
+					</label>
+				</div>
+			<?php endif; ?>
+			<?php if ( $fields['address_2'] ) : ?>
+				<div class="form-row sds-address-2">
+					<label>
+						<span><?php _e( 'Address Line 2', 'simple-donations-stripe' ); ?></span>
+						<input type="text" name="address_2" <?php echo $required; ?>>
+					</label>
+				</div>
+			<?php endif; ?>
+			<?php if ( $fields['address_zip'] ) : ?>
+				<div class="form-row sds-address-zip">
+					<label>
+						<span><?php _e( 'ZIP', 'simple-donations-stripe' ); ?></span>
+						<input type="text" name="address_zip" size="6" <?php echo $required; ?>>
+					</label>
+				</div>
+			<?php endif; ?>
+			<?php if ( $fields['address_postal'] ) : ?>
+				<div class="form-row sds-address-zip">
+					<label>
+						<span><?php _e( 'Postal', 'simple-donations-stripe' ); ?></span>
+						<input type="text" name="address_postal" <?php echo $required; ?>>
+					</label>
+				</div>
+			<?php endif; ?>
+			<?php if ( $fields['address_city'] ) : ?>
+				<div class="form-row sds-address-city">
+					<label>
+						<span><?php _e( 'City', 'simple-donations-stripe' ); ?></span>
+						<input type="text" name="address_city" size="6" <?php echo $required; ?>>
+					</label>
+				</div>
+			<?php endif; ?>
+			<?php if ( $fields['address_state'] ) : ?>
+				<div class="form-row sds-address-state">
+					<label>
+						<span><?php _e( 'State', 'simple-donations-stripe' ); ?></span>
+						<select name="address_state" <?php echo $required; ?>>
+							<?php echo $states_options; ?>
+						</select>
+					</label>
+				</div>
+			<?php endif; ?>
+			<?php if ( $fields['address_province'] ) : ?>
+				<div class="form-row sds-address-province">
+					<label>
+						<span><?php _e( 'Province', 'simple-donations-stripe' ); ?></span>
+						<select name="address_province" <?php echo $required; ?>>
+							<?php echo $states_options; ?>
+						</select>
+					</label>
+				</div>
+			<?php endif; ?>
+			<?php if ( $fields['address_country'] ) : ?>
+				<div class="form-row sds-address-country">
+					<label>
+						<span><?php _e( 'Country', 'simple-donations-stripe' ); ?></span>
+						<select name="address_country" <?php echo $required; ?>>
+							<?php echo $country_options; ?>
+						</select>
+					</label>
+				</div>
+			<?php endif; ?>
 		<?php
 		return ob_get_clean();
 	}

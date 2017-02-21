@@ -3,7 +3,8 @@
 namespace SimpleDonationsStripe;
 
 use SimpleDonationsStripe\Controllers\FormController;
-use SimpleDonationsStripe\Tools;
+use SimpleDonationsStripe\Tools\Loader;
+use SimpleDonationsStripe\Tools\CountryData;
 
 /**
  * The core plugin class
@@ -16,6 +17,7 @@ use SimpleDonationsStripe\Tools;
 class Plugin {
 
 	const ACTION_DONATION_SUCCESS = 'sds_donation_success';
+	const FILTER_STATES_PROVINCES = 'sds_states_provinces';
 
 	/**
 	 * The unique identifier of this plugin.
@@ -81,7 +83,7 @@ class Plugin {
 	 * with WordPress.
 	 */
 	private function init() {
-		$this->loader = new Tools\Loader();
+		$this->loader = new Loader();
 		$this->i18n = new I18n( $this->plugin_name );
 		$this->assets = new Assets( $this->plugin_name, $this->version, $this->base_url );
 		$this->settings = new Settings();
