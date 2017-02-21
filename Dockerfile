@@ -12,6 +12,12 @@ RUN echo "postfix postfix/main_mailer_type string 'Internet Site'" | debconf-set
 
 RUN apt-get install -y postfix postfix-pcre mutt vim unzip git
 
+# Set some php.ini stuff
+RUN echo ""                         >> /usr/local/etc/php/conf.d/z-overwriting-config.ini
+# opcache seems to cause some bugs in my programs, yo
+RUN echo "opcache.enable=0"         >> /usr/local/etc/php/conf.d/z-overwriting-config.ini
+RUN echo "opcache.enable_cli=0"     >> /usr/local/etc/php/conf.d/z-overwriting-config.ini
+
 # Postfix (Catches all outgoing email, puts it in the 'root' user's mailbox. Use mutt to read it.)
 RUN echo ""                                                                 >> /etc/postfix/main.cf
 RUN echo "virtual_alias_domains ="                                          >> /etc/postfix/main.cf
