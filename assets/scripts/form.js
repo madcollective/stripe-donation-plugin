@@ -39,7 +39,7 @@ function initSubmission() {
 
 	form.addEventListener('submit', (event) => {
 		// Disable the submit button to prevent repeated clicks
-		submit.setAttribute('disabled', 'disabled');
+		startSubmitting();
 		clearErrors(form);
 
 		// Request a token from Stripe
@@ -54,8 +54,7 @@ function initSubmission() {
 			// Show the errors on the form
 			errorsElement.textContent = response.error.message;
 
-			// Re-enable submission
-			submit.removeAttribute('disabled');
+			endSubmitting();
 		}
 		else { // Token was created!
 			// Get the token ID
@@ -89,8 +88,7 @@ function initSubmission() {
 	}
 
 	function onResponse(event) {
-		// Re-enable submission
-		submit.removeAttribute('disabled');
+		endSubmitting();
 
 		if (event.target.status === 200) {
 			const response = JSON.parse(event.target.response);
@@ -102,6 +100,16 @@ function initSubmission() {
 		else {
 			errorsElement.innerHTML = event.target.statusText;
 		}
+	}
+
+	function startSubmitting() {
+		submit.setAttribute('disabled', 'disabled');
+		addClass(form, 'submitting');
+	}
+
+	function endSubmitting() {
+		submit.removeAttribute('disabled');
+		removeClass(form, 'submitting');
 	}
 
 	function showSuccess(successMessage) {
@@ -117,8 +125,7 @@ function initSubmission() {
 	}
 
 	function onError(event) {
-		// Re-enable submission
-		submit.removeAttribute('disabled');
+		endSubmitting();
 		errorsElement.innerHTML = 'Error sending form data.';
 		console.error(event);
 	}
