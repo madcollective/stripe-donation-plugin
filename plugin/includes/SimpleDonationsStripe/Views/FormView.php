@@ -98,6 +98,8 @@ class FormView {
 		if ( $options['allow_custom_amount'] )
 			$amounts['custom'] = __( 'Other', 'simple-donations-stripe' );
 
+		$default = ( 0 == $options['default_amount'] ) ? null : intval( $options['default_amount'] );
+
 		ob_start();
 		?>
 			<?php if ( $options['show_preset_amounts'] ) : ?>
@@ -109,7 +111,7 @@ class FormView {
 								<?php foreach ( $amounts as $key => $value ) : ?>
 									<option
 										value="<?php echo $key; ?>"
-										<?php if ( $key == $options['default_amount'] ) echo 'selected'; ?>>
+										<?php if ( $key === $default ) echo 'selected'; ?>>
 										<?php echo $value; ?>
 									</option>
 								<?php endforeach; ?>
@@ -124,7 +126,7 @@ class FormView {
 											name="preset-amount"
 											value="<?php echo $key; ?>"
 											id="<?php echo $id; ?>"
-											<?php if ( $key == $options['default_amount'] ) echo 'checked'; ?>>
+											<?php if ( $key === $default ) echo 'checked'; ?>>
 										<label for="<?php echo $id; ?>"><?php echo $value; ?></label>
 									</li>
 								<?php endforeach; ?>
@@ -150,7 +152,9 @@ class FormView {
 						<input type="checkbox" name="monthly">
 						<span>
 							<?php _e( 'Make this my monthly donation.', 'simple-donations-stripe' ); ?>
-							<small><?php echo $options['monthly_note_text']; ?></small>
+							<?php if ( $options['monthly_note_text'] ) : ?>
+								<small><?php echo $options['monthly_note_text']; ?></small>
+							<?php endif; ?>
 						</span>
 					</label>
 				</div>
@@ -209,6 +213,15 @@ class FormView {
 					<input type="number" size="20" data-stripe="number" pattern="[0-9]{13,16}" required>
 				</label>
 			</div>
+
+			<ul class="sds-card-types">
+				<li class="visa"></li>
+				<li class="mastercard"></li>
+				<li class="amex"></li>
+				<li class="diners-club"></li>
+				<li class="discover"></li>
+				<li class="jcb"></li>
+			</ul>
 
 			<div class="form-row sds-expiration">
 				<label>

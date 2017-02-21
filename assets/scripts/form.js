@@ -1,5 +1,7 @@
 import RunIf    from './run-if';
 import delegate from 'delegate';
+import addClass from 'add-class';
+import removeClass from 'remove-class';
 
 /**
  * From http://stackoverflow.com/a/26556347/4085004
@@ -169,7 +171,9 @@ function initAmounts() {
 		delegate(radioList, 'input', 'click', valueChanged);
 
 		// Set default amount
-		amountInput.value = radioList.querySelector('input:checked').value;
+		var checked = radioList.querySelector('input:checked');
+		if (checked)
+			amountInput.value = checked.value;
 
 		// Create list of preset amounts
 		presetAmounts = [].map.call(radioList.querySelectorAll('input'), (el) => el.value );
@@ -216,6 +220,7 @@ function initAmounts() {
  */
 function initCardNumber() {
 	const numberInput = document.querySelector('input[data-stripe="number"]');
+	const cardTypeListElement = document.querySelector('.sds-card-types');
 
 	const cardTypes = [
 		[ 'visa',        new RegExp(/^4[0-9]{12}(?:[0-9]{3})?$/) ],
@@ -228,14 +233,25 @@ function initCardNumber() {
 
 	function numberChanged(event) {
 		const number = numberInput.value;
-		const cardType = cardTypes.filter(function(typeInfo) {
+		const matchingCardTypes = cardTypes.filter(function(typeInfo) {
 			return typeInfo[1].test(number);
 		});
+		const cardType = matchingCardTypes.length ? matchingCardTypes[0][0] : '';
 
-		if (cardType.length)
-			numberInput.setAttribute('data-card-type', cardType[0][0]);
-		else
+		const previousItem = cardTypeListElement.querySelector('.selected');
+		if (previousItem)
+			removeClass(previousItem, 'selected');
+
+		if (cardType) {
+			const cardTypeItem = cardTypeListElement.querySelector('.' + cardType);
+			if (cardTypeItem)
+				addClass(cardTypeItem, 'selected');
+
+			numberInput.setAttribute('data-card-type', cardType);
+		}
+		else {
 			numberInput.removeAttribute('data-card-type');
+		}
 	}
 
 	numberInput.addEventListener('change',   numberChanged);
