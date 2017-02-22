@@ -75,9 +75,11 @@ class FormView {
 						</fieldset>
 					<?php endif; ?>
 
-					<button type="submit" class="sds-submit"><?php _e( 'Submit Payment', 'simple-donations-stripe' ); ?></button>
+					<footer>
+						<button type="submit" class="sds-submit"><?php _e( 'Submit Payment', 'simple-donations-stripe' ); ?></button>
 
-					<a href="https://stripe.com/" class="sds-powered-by-stripe">Powered by Stripe</a>
+						<a href="https://stripe.com/" class="sds-powered-by-stripe">Powered by Stripe</a>
+					</footer>
 				</form>
 
 				<script type="text/javascript">
