@@ -34,7 +34,7 @@ function paramsFromForm(form) {
  */
 function initSubmission() {
 	const form = document.querySelector('#stripe-donation-form');
-	const submit = form.querySelector('.submit');
+	const submit = form.querySelector('.sds-submit');
 	const errorsElement = form.querySelector('.sds-payment-errors');
 
 	form.addEventListener('submit', (event) => {
