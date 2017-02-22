@@ -161,6 +161,7 @@ function initSubmission() {
  * Initializes the amount selection/customization behavior
  */
 function initAmounts() {
+	const wrapper     = document.querySelector('.sds-amount-presets');
 	const radioList   = document.querySelector('.sds-radio-button-list');
 	const amountInput = document.querySelector('input[name="amount"]');
 	var presetAmounts;
@@ -171,6 +172,8 @@ function initAmounts() {
 			amountInput.value = event.target.value;
 		else
 			amountInput.select();
+
+		wrapper.setAttribute('data-amount', event.target.value);
 	}
 
 	if (radioList) {

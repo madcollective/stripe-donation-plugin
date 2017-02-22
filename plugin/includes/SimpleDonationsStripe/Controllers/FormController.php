@@ -31,18 +31,20 @@ class FormController {
 		// Collect and sanitize input
 		$stripe_token = sanitize_text_field( $_POST['stripe_token'] );
 
-		$amount  = sanitize_text_field( $_POST['amount'] );
-		$name    = isset( $_POST['name']    ) ? sanitize_text_field( $_POST['name']    ) : null;
-		$email   = isset( $_POST['email']   ) ? sanitize_text_field( $_POST['email']   ) : null;
-		$phone   = isset( $_POST['phone']   ) ? sanitize_text_field( $_POST['phone']   ) : null;
-		$monthly = isset( $_POST['monthly'] ) ? sanitize_text_field( $_POST['monthly'] ) : null;
+		$amount     = sanitize_text_field( $_POST['amount'] );
+		$name       = isset( $_POST['name']       ) ? sanitize_text_field( $_POST['name']       ) : null;
+		$name_first = isset( $_POST['name_first'] ) ? sanitize_text_field( $_POST['name_first'] ) : null;
+		$name_last  = isset( $_POST['name_last']  ) ? sanitize_text_field( $_POST['name_last']  ) : null;
+		$email      = isset( $_POST['email']      ) ? sanitize_text_field( $_POST['email']      ) : null;
+		$phone      = isset( $_POST['phone']      ) ? sanitize_text_field( $_POST['phone']      ) : null;
+		$monthly    = isset( $_POST['monthly']    ) ? sanitize_text_field( $_POST['monthly']    ) : null;
 
 		// Transform and determine useful things from input
 		$amount = doubleval( $amount ) * self::get_currency_scale();
 		$is_monthly = ( $monthly === 'yes' );
 
 		// Bundle them all up for certain function calls
-		$info = compact( 'amount', 'is_monthly', 'name', 'email', 'phone' );
+		$info = compact( 'amount', 'is_monthly', 'name', 'name_first', 'name_last', 'email', 'phone' );
 
 		// Validate input
 		$validation = self::validate_post_donate( $info );
@@ -53,6 +55,8 @@ class FormController {
 			Stripe::setApiKey( Settings::get_stripe_secret_key() );
 
 			// Create the Stripe Customer object
+			if ( ! $name )
+				$name = "$name_first $name_last";
 			$customer = self::create_customer( $stripe_token, $email, $name, $phone );
 
 			// Charge the customer or set up a recurring payment
