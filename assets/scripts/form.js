@@ -28,6 +28,11 @@ function paramsFromForm(form) {
 	}).join('&');
 }
 
+function scrollTo(element) {
+	var rect = element.getBoundingClientRect();
+	window.scrollTo(0, Math.max(rect.top + document.body.scrollTop - 100, 0));
+}
+
 /**
  * Initializes the form behavior of requesting a Stripe token and submitting to
  *   the form controller via ajax
@@ -52,7 +57,14 @@ function initSubmission() {
 	function stripeResponseHandler(status, response) {
 		if (response.error) { // Problem!
 			// Show the errors on the form
-			errorsElement.textContent = response.error.message;
+			if (response.error.param) {
+				const paramElement = form.querySelector('input[data-stripe="' + response.error.param + '"]');
+				showError(response.error.message, paramElement);
+			}
+			else {
+				errorsElement.textContent = response.error.message;
+				scrollTo(errorsElement);
+			}
 
 			endSubmitting();
 		}
@@ -92,10 +104,15 @@ function initSubmission() {
 
 		if (event.target.status === 200) {
 			const response = JSON.parse(event.target.response);
-			if (response.success)
+			if (response.success) {
 				showSuccess(response.success_message);
-			else
-				response.errors.forEach(showError);
+			}
+			else {
+				response.errors.forEach(error => {
+					var fieldElement = form.querySelector('[name="' + error.field + '"]');
+					showError(error.error, fieldElement);
+				});
+			}
 		}
 		else {
 			errorsElement.innerHTML = event.target.statusText;
@@ -120,14 +137,14 @@ function initSubmission() {
 		wrapper.innerHTML = '';
 		wrapper.appendChild(success);
 
-		var rect = success.getBoundingClientRect();
-		window.scrollTo(0, Math.max(rect.top + document.body.scrollTop - 20, 0));
+		scrollTo(success);
 	}
 
 	function onError(event) {
 		endSubmitting();
 		errorsElement.innerHTML = 'Error sending form data.';
 		console.error(event);
+		scrollTo(errorsElement);
 	}
 
 	function clearErrors(form) {
@@ -141,18 +158,17 @@ function initSubmission() {
 		}
 	}
 
-	function showError(error) {
-		if (error.field) {
-			const field = form.querySelector('[name="' + error.field + '"]');
-			if (field) {
-				const errorElement = document.createElement('div');
-				errorElement.className = 'sds-field-error';
-				errorElement.innerHTML = error.error;
-				field.parentNode.parentNode.appendChild(errorElement);
-			}
+	function showError(message, fieldElement) {
+		if (fieldElement) {
+			const errorElement = document.createElement('div');
+			errorElement.className = 'sds-field-error';
+			errorElement.innerHTML = message;
+			fieldElement.parentNode.parentNode.appendChild(errorElement);
+			scrollTo(fieldElement);
 		}
 		else {
-			errorsElement.innerHTML += '<p>' + error.error + '</p>';
+			errorsElement.innerHTML += '<p>' + message + '</p>';
+			scrollTo(errorsElement);
 		}
 	}
 }

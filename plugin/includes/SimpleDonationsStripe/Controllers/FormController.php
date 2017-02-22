@@ -97,7 +97,7 @@ class FormController {
 			$min_amount = Locales::format_money( self::MIN_DONATION_AMOUNT, 0, $locale, false );
 			$errors[] = [
 				'field' => 'amount',
-				'error' => __( 'Donation amount must be at least', 'simple-donations-stripe' ) . "$min_amount.",
+				'error' => __( 'Donation amount must be at least ', 'simple-donations-stripe' ) . "$min_amount.",
 			];
 		}
 

@@ -154,7 +154,7 @@ class FormView {
 							<?php echo ( $options['custom_amount_label'] ) ? $options['custom_amount_label'] : __( 'Your Gift Amount', 'simple-donations-stripe' ); ?>
 							<span class="currency-symbol"><?php echo $currency_symbol; ?></span>
 						</span>
-						<input type="number" name="amount" class="sds-field" pattern="^\d+(\.|\,)\d{2}$" min="1" required>
+						<input type="number" name="amount" class="sds-field" pattern="^\d+(\.|\,)\d{2}$" min="1" step="any" required>
 					</label>
 				</div>
 			<?php endif; ?>
