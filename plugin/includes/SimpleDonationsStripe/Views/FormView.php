@@ -154,7 +154,7 @@ class FormView {
 							<?php echo ( $options['custom_amount_label'] ) ? $options['custom_amount_label'] : __( 'Your Gift Amount', 'simple-donations-stripe' ); ?>
 							<span class="currency-symbol"><?php echo $currency_symbol; ?></span>
 						</span>
-						<input type="number" name="amount" class="sds-field" pattern="^\d+(\.|\,)\d{2}$" min="1" step="any" required>
+						<input type="text" name="amount" class="sds-field" pattern="^\d+(\.|\,)\d{2}$" min="1" step="any" required>
 					</label>
 				</div>
 			<?php endif; ?>
@@ -240,7 +240,7 @@ class FormView {
 			<div class="field-wrapper sds-card-number">
 				<label>
 					<span><?php _e( 'Card Number', 'simple-donations-stripe' ); ?></span>
-					<input type="number" size="20" data-stripe="number" class="sds-field" pattern="[0-9]{13,16}" required>
+					<input type="text" size="20" data-stripe="number" class="sds-field" pattern="[0-9]{13,16}" required>
 				</label>
 			</div>
 
@@ -255,17 +255,39 @@ class FormView {
 
 			<div class="field-wrapper sds-expiration">
 				<label>
-					<span><?php _e( 'Expiration (MM/YY)', 'simple-donations-stripe' ); ?></span>
-					<input type="number" size="2" data-stripe="exp_month" class="sds-field" pattern="\d{2}" required>
-					<span class="sds-slash"> / </span>
-					<input type="number" size="2" data-stripe="exp_year" class="sds-field" pattern="\d{2}" required>
+					<span><?php _e( 'Expiration (Month Year)', 'simple-donations-stripe' ); ?></span>
+					<?php /* ?><input type="text" size="2" data-stripe="exp_month" class="sds-field" pattern="\d{2}" required> <?php */ ?>
+					<select data-stripe="exp_month" class="sds-field" required>
+					  <option value=""></option>
+					  <option value="01">01 - January</option>
+					  <option value="02">02 - February</option>
+					  <option value="03">03 - March</option>
+					  <option value="04">04 - April</option>
+					  <option value="05">05 - May</option>
+					  <option value="06">06 - June</option>
+					  <option value="07">07 - July</option>
+					  <option value="08">08 - August</option>
+					  <option value="09">09 - September</option>
+					  <option value="10">10 - October</option>
+					  <option value="11">11 - November</option>
+					  <option value="12">12 - December</option>
+					</select>
+					<?php /* ?><span class="sds-slash"> / </span><?php */ ?>
+					<?php /* ?><input type="text" size="2" data-stripe="exp_year" class="sds-field" pattern="\d{2}" required><?php */ ?>
+					<select data-stripe="exp_year" class="sds-field" required>
+					  <option value=""></option>
+					  <?php $this_yr = intval(date("Y")); 
+					        for ($yr = $this_yr; $yr < $this_yr + 24; $yr++) { 
+					            echo '<option value="'. substr($yr, -2) .'">'. $yr .'</option>'; 
+                                                } ?>
+					</select>
 				</label>
 			</div>
 
 			<div class="field-wrapper sds-cvc">
 				<label>
 					<span><?php _e( 'CVC', 'simple-donations-stripe' ); ?></span>
-					<input type="number" size="4" data-stripe="cvc" class="sds-field" required>
+					<input type="text" size="4" data-stripe="cvc" class="sds-field" pattern="\d{3,4}" required>
 				</label>
 			</div>
 
