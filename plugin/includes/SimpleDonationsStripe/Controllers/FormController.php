@@ -217,6 +217,12 @@ class FormController {
 		$required_fields = array_keys( array_filter( Settings::get( 'fields_required' ) ) );
 		$required_fields[] = 'amount';
 
+		// remove 'mailing_address' (it's not a real field to be validated)
+		$index = array_search('mailing_address', $required_fields);
+		if($index !== FALSE) {
+    			  unset($required_fields[$index]);
+		}
+
 		return $required_fields;
 	}
 

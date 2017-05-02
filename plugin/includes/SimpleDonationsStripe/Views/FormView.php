@@ -253,9 +253,10 @@ class FormView {
 				<li class="jcb"></li>
 			</ul>
 
-			<div class="field-wrapper sds-expiration">
+			<div class="field-wrapper sds-expiration-month">
 				<label>
-					<span><?php _e( 'Expiration (Month Year)', 'simple-donations-stripe' ); ?></span>
+					<span><?php _e( 'Expiration Month', 'simple-donations-stripe' ); ?></span>
+					<?php /* ?><span class="sds-slash"> / </span><?php */ ?>
 					<?php /* ?><input type="text" size="2" data-stripe="exp_month" class="sds-field" pattern="\d{2}" required> <?php */ ?>
 					<select data-stripe="exp_month" class="sds-field" required>
 					  <option value=""></option>
@@ -272,7 +273,12 @@ class FormView {
 					  <option value="11">11 - November</option>
 					  <option value="12">12 - December</option>
 					</select>
-					<?php /* ?><span class="sds-slash"> / </span><?php */ ?>
+				</label>
+			</div>
+
+			<div class="field-wrapper sds-expiration-year">
+				<label>
+					<span><?php _e( 'Expiration Year', 'simple-donations-stripe' ); ?></span>
 					<?php /* ?><input type="text" size="2" data-stripe="exp_year" class="sds-field" pattern="\d{2}" required><?php */ ?>
 					<select data-stripe="exp_year" class="sds-field" required>
 					  <option value=""></option>
